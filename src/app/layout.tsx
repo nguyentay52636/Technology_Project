@@ -3,11 +3,11 @@ import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 
 // 1. Import các component của bạn vào đây
-import Navbar from "@/components/Navbar"; 
-import Footer from "@/components/Footer";
 import { cn } from "@/lib/utils";
+import MainLayout from "@/components/MainLayout";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
-const inter = Inter({subsets:['latin'],variable:'--font-sans'});
+const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,20 +34,12 @@ export default function RootLayout({
       lang="en"
       className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", inter.variable)}
     >
-      {/* 2. Thêm flex-col để Footer luôn nằm dưới cùng */}
       <body className="min-h-full flex flex-col bg-white dark:bg-black">
-        
-        {/* Navbar sẽ luôn xuất hiện ở đầu trang */}
-        <Navbar />
-
-        {/* main với flex-1 để "đẩy" Footer xuống đáy nếu nội dung trang ít */}
-        <main className="flex-1">
-          {children}
-        </main>
-
-        {/* Footer sẽ luôn xuất hiện ở cuối trang */}
-        <Footer />
-
+        <TooltipProvider>
+          <MainLayout>
+            {children}
+          </MainLayout>
+        </TooltipProvider>
       </body>
     </html>
   );

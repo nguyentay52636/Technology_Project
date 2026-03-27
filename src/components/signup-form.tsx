@@ -83,7 +83,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<typeof 
                   Đăng ký với Google
                 </Button>
                 <FieldDescription className="text-center pt-4">
-                  Đã có tài khoản? <a href="#" className="underline font-medium hover:text-primary">Đăng nhập ngay</a>
+                  Đã có tài khoản? <a href="/login" className="underline font-medium hover:text-primary">Đăng nhập ngay</a>
                 </FieldDescription>
               </Field>
             </FieldGroup>

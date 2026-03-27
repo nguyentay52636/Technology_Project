@@ -73,7 +73,7 @@ export function LoginForm({
                   Đăng nhập với Google
                 </Button>
                 <FieldDescription className="text-center pt-4">
-                  Chưa có tài khoản? <a href="#" className="underline font-medium hover:text-primary">Đăng ký ngay</a>
+                  Chưa có tài khoản? <a href="/signup" className="underline font-medium hover:text-primary">Đăng ký ngay</a>
                 </FieldDescription>
               </Field>
             </FieldGroup>
