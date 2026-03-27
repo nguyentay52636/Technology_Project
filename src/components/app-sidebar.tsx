@@ -14,6 +14,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import { GalleryVerticalEndIcon, AudioLinesIcon, TerminalIcon, TerminalSquareIcon, BotIcon, BookOpenIcon, Settings2Icon, FrameIcon, PieChartIcon, MapIcon } from "lucide-react"
+import { ModeToggle } from "./ui/ModeTogger"
 
 // This is sample data.
 const data = {
@@ -186,6 +187,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
+        <ModeToggle />
         <NavUser user={data.user} />
       </SidebarFooter>
       <SidebarRail />

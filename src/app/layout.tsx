@@ -6,6 +6,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import MainLayout from "@/components/MainLayout";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -34,12 +35,18 @@ export default function RootLayout({
       lang="en"
       className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", inter.variable)}
     >
-      <body className="min-h-full flex flex-col bg-white dark:bg-black">
-        <TooltipProvider>
-          <MainLayout>
-            {children}
-          </MainLayout>
-        </TooltipProvider>
+      <body>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+        >
+          <TooltipProvider>
+            <MainLayout>
+              {children}
+            </MainLayout>
+          </TooltipProvider>
+        </ThemeProvider>
+
       </body>
     </html>
   );

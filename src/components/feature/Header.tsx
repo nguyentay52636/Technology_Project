@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function Navbar() {
+export default function Header() {
   return (
     <header className="fixed top-0 z-50 w-full border-b border-gray-100 bg-white/80 backdrop-blur-md dark:bg-black/80 dark:border-zinc-800">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -18,9 +18,9 @@ export default function Navbar() {
           </nav>
 
           <div className="flex items-center">
-             <Link href="/login" className="text-sm font-bold px-5 py-2 bg-gray-100 dark:bg-zinc-800 rounded-full hover:bg-gray-200 transition">
-                Sign In
-              </Link>
+            <Link href="/login" className="text-sm font-bold px-5 py-2 bg-gray-100 dark:bg-zinc-800 rounded-full hover:bg-gray-200 transition">
+              Sign In
+            </Link>
           </div>
         </div>
       </div>

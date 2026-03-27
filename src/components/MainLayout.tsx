@@ -1,7 +1,7 @@
 "use client"
 import { usePathname } from "next/navigation";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import Footer from "./feature/Footer";
+import Header from "./feature/Header";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -13,7 +13,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <>
-      <Navbar />
+      <Header />
       <main className="flex-1">{children}</main>
       <Footer />
     </>
