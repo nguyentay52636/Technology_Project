@@ -8,6 +8,8 @@ import MainLayout from "@/components/MainLayout";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
 import { CartProvider } from "@/lib/cart-context";
+import { ProductProvider } from "@/lib/product-context";
+import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -34,6 +36,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", inter.variable)}
     >
       <body>
@@ -41,13 +44,16 @@ export default function RootLayout({
           attribute="class"
           defaultTheme="system"
         >
-          <CartProvider>
-            <TooltipProvider>
-              <MainLayout>
-                {children}
-              </MainLayout>
-            </TooltipProvider>
-          </CartProvider>
+          <Toaster position="top-right" richColors />
+          <ProductProvider>
+            <CartProvider>
+              <TooltipProvider>
+                <MainLayout>
+                  {children}
+                </MainLayout>
+              </TooltipProvider>
+            </CartProvider>
+          </ProductProvider>
         </ThemeProvider>
 
       </body>
