@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import MainLayout from "@/components/MainLayout";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
+import { CartProvider } from "@/lib/cart-context";
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -40,11 +41,13 @@ export default function RootLayout({
           attribute="class"
           defaultTheme="system"
         >
-          <TooltipProvider>
-            <MainLayout>
-              {children}
-            </MainLayout>
-          </TooltipProvider>
+          <CartProvider>
+            <TooltipProvider>
+              <MainLayout>
+                {children}
+              </MainLayout>
+            </TooltipProvider>
+          </CartProvider>
         </ThemeProvider>
 
       </body>

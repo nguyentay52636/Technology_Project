@@ -1,29 +1,144 @@
-import Link from "next/link";
+"use client"
 
-export default function Header() {
+import Link from "next/link"
+import { useState } from "react"
+import { Menu, Search, ShoppingCart, User, X } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { useCart } from "@/lib/cart-context"
+import { Badge } from "../ui/badge"
+
+const categories = [
+  { name: "Laptop", href: "#laptops" },
+  { name: "Dien Tu", href: "#electronics" },
+  { name: "Quan Ao", href: "#clothing" },
+  { name: "Phu Kien", href: "#accessories" },
+]
+
+export function Header() {
+  const [searchOpen, setSearchOpen] = useState(false)
+  const { itemCount, setIsCartOpen } = useCart()
+
   return (
-    <header className="fixed top-0 z-50 w-full border-b border-gray-100 bg-white/80 backdrop-blur-md dark:bg-black/80 dark:border-zinc-800">
-      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-blue-600 rounded-lg"></div>
-          <span className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">NextApp</span>
-        </div>
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-6">
+        {/* Mobile Menu */}
+        <Sheet>
+          <SheetTrigger asChild className="md:hidden">
+            <Button variant="ghost" size="icon">
+              <Menu className="h-5 w-5" />
+              <span className="sr-only">Menu</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-[300px]">
+            <SheetHeader>
+              <SheetTitle className="font-serif text-xl">Danh Muc</SheetTitle>
+            </SheetHeader>
+            <nav className="mt-6 flex flex-col gap-4">
+              {categories.map((category) => (
+                <Link
+                  key={category.name}
+                  href={category.href}
+                  className="text-lg font-medium transition-colors hover:text-accent"
+                >
+                  {category.name}
+                </Link>
+              ))}
+            </nav>
+          </SheetContent>
+        </Sheet>
 
-        <div className="flex items-center gap-10">
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600 dark:text-gray-400">
-            <Link href="/" className="hover:text-blue-600 transition">Trang chủ</Link>
-            <Link href="/products" className="hover:text-blue-600 transition">Sản phẩm</Link>
-            <Link href="/about" className="hover:text-blue-600 transition">About</Link>
-            <Link href="/contact" className="hover:text-blue-600 transition">Contact Us</Link>
-          </nav>
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-2">
+          <span className="font-serif text-2xl font-bold tracking-tight">TechMart</span>
+        </Link>
 
-          <div className="flex items-center">
-            <Link href="/login" className="text-sm font-bold px-5 py-2 bg-gray-100 dark:bg-zinc-800 rounded-full hover:bg-gray-200 transition">
-              Sign In
+        {/* Desktop Navigation */}
+        <nav className="hidden items-center gap-8 md:flex">
+          {categories.map((category) => (
+            <Link
+              key={category.name}
+              href={category.href}
+              className="text-sm font-medium uppercase tracking-wider transition-colors hover:text-accent"
+            >
+              {category.name}
             </Link>
-          </div>
+          ))}
+        </nav>
+
+        {/* Actions */}
+        <div className="flex items-center gap-2">
+          {/* Search */}
+          {searchOpen ? (
+            <div className="flex items-center gap-2">
+              <Input
+                type="search"
+                placeholder="Tim kiem..."
+                className="h-9 w-[200px] md:w-[300px]"
+                autoFocus
+              />
+              <Button variant="ghost" size="icon" onClick={() => setSearchOpen(false)}>
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          ) : (
+            <Button variant="ghost" size="icon" onClick={() => setSearchOpen(true)}>
+              <Search className="h-5 w-5" />
+              <span className="sr-only">Tim kiem</span>
+            </Button>
+          )}
+
+          {/* User */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <User className="h-5 w-5" />
+                <span className="sr-only">Tai khoan</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem>Dang Nhap</DropdownMenuItem>
+              <DropdownMenuItem>Dang Ky</DropdownMenuItem>
+              <DropdownMenuItem>Don Hang</DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/admin">Quan Tri</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Cart */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="relative"
+            onClick={() => setIsCartOpen(true)}
+          >
+            <ShoppingCart className="h-5 w-5" />
+            {itemCount > 0 && (
+              <Badge
+                variant="destructive"
+                className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full p-0 text-xs"
+              >
+                {itemCount}
+              </Badge>
+            )}
+            <span className="sr-only">Gio hang</span>
+          </Button>
         </div>
       </div>
     </header>
-  );
+  )
 }
