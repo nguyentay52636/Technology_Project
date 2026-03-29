@@ -8,7 +8,6 @@ import MainLayout from "@/components/MainLayout";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
 import { CartProvider } from "@/lib/cart-context";
-import { ProductProvider } from "@/lib/product-context";
 import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
@@ -45,15 +44,13 @@ export default function RootLayout({
           defaultTheme="system"
         >
           <Toaster position="top-right" richColors />
-          <ProductProvider>
-            <CartProvider>
-              <TooltipProvider>
-                <MainLayout>
-                  {children}
-                </MainLayout>
-              </TooltipProvider>
-            </CartProvider>
-          </ProductProvider>
+          <CartProvider>
+            <TooltipProvider>
+              <MainLayout>
+                {children}
+              </MainLayout>
+            </TooltipProvider>
+          </CartProvider>
         </ThemeProvider>
 
       </body>
