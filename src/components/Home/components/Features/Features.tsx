@@ -5,23 +5,23 @@ import { Truck, Shield, Clock, Headphones } from "lucide-react"
 const features = [
     {
         icon: Truck,
-        title: "Giao Hang Mien Phi",
-        description: "Mien phi van chuyen cho don hang tu 500.000d",
+        title: "Giao Hàng Miễn Phí",
+        description: "Miễn phí vận chuyển cho đơn hàng từ 500.000đ",
     },
     {
         icon: Shield,
-        title: "Bao Hanh Chinh Hang",
-        description: "San pham chinh hang 100% voi bao hanh toan quoc",
+        title: "Bảo Hành Chính Hãng",
+        description: "Sản phẩm chính hãng 100% với bảo hành toàn quốc",
     },
     {
         icon: Clock,
-        title: "Giao Hang Nhanh",
-        description: "Giao hang trong 24h tai noi thanh",
+        title: "Giao Hàng Nhanh",
+        description: "Giao hàng trong 24h tại nội thành",
     },
     {
         icon: Headphones,
-        title: "Ho Tro 24/7",
-        description: "Doi ngu tu van san sang ho tro ban bat cu luc nao",
+        title: "Hỗ Trợ 24/7",
+        description: "Đội ngũ tư vấn sẵn sàng hỗ trợ bạn bất cứ lúc nào",
     },
 ]
 

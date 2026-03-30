@@ -62,7 +62,7 @@ export function CardProduct({ product }: ProductCardProps) {
             {/* Badges */}
             <div className="absolute left-3 top-3 z-10 flex flex-col gap-2">
                 {product.isNew && (
-                    <Badge className="bg-foreground text-background">Moi</Badge>
+                    <Badge className="bg-foreground text-background">Mới</Badge>
                 )}
                 {product.isSale && discount > 0 && (
                     <Badge variant="destructive">-{discount}%</Badge>
@@ -101,7 +101,7 @@ export function CardProduct({ product }: ProductCardProps) {
                 >
                     <Button className="w-full gap-2" onClick={handleAddToCart}>
                         <ShoppingCart className="h-4 w-4" />
-                        Them vao gio
+                        Thêm vào giỏ
                     </Button>
                 </div>
             </div>

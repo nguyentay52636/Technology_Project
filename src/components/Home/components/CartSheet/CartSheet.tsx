@@ -32,7 +32,7 @@ export function CartSheet() {
                 <SheetHeader className="space-y-2.5 pr-6">
                     <SheetTitle className="flex items-center gap-2 font-serif text-xl">
                         <ShoppingBag className="h-5 w-5" />
-                        Gio hang ({itemCount})
+                        Giỏ hàng ({itemCount})
                     </SheetTitle>
                 </SheetHeader>
 
@@ -43,12 +43,12 @@ export function CartSheet() {
                                 <EmptyMedia variant="icon">
                                     <ShoppingBag />
                                 </EmptyMedia>
-                                <EmptyTitle>Gio hang trong</EmptyTitle>
-                                <EmptyDescription>Chua co san pham nao trong gio hang</EmptyDescription>
+                                <EmptyTitle>Giỏ hàng trống</EmptyTitle>
+                                <EmptyDescription>Chưa có sản phẩm nào trong giỏ hàng</EmptyDescription>
                             </EmptyHeader>
                         </Empty>
                         <Button className="mt-4" onClick={() => setIsCartOpen(false)}>
-                            Tiep tuc mua sam
+                            Tiếp tục mua sắm
                         </Button>
                     </div>
                 ) : (
@@ -118,29 +118,29 @@ export function CartSheet() {
 
                             <div className="space-y-2">
                                 <div className="flex items-center justify-between text-sm">
-                                    <span className="text-muted-foreground">Tam tinh</span>
+                                    <span className="text-muted-foreground">Tạm tính</span>
                                     <span>{formatPrice(total)}</span>
                                 </div>
                                 <div className="flex items-center justify-between text-sm">
-                                    <span className="text-muted-foreground">Phi van chuyen</span>
-                                    <span className="text-green-600">Mien phi</span>
+                                    <span className="text-muted-foreground">Phí vận chuyển</span>
+                                    <span className="text-green-600">Miễn phí</span>
                                 </div>
                             </div>
 
                             <Separator />
 
                             <div className="flex items-center justify-between font-semibold">
-                                <span>Tong cong</span>
+                                <span>Tổng cộng</span>
                                 <span className="text-lg">{formatPrice(total)}</span>
                             </div>
 
                             <div className="flex flex-col gap-2">
                                 <Button size="lg" className="w-full">
-                                    Thanh toan ({formatPrice(total)})
+                                    Thanh toán ({formatPrice(total)})
                                 </Button>
                                 <Button variant="outline" size="lg" className="w-full gap-2" onClick={clearCart}>
                                     <Trash2 className="h-4 w-4" />
-                                    Xoa gio hang
+                                    Xóa giỏ hàng
                                 </Button>
                             </div>
                         </div>

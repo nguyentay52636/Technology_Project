@@ -12,24 +12,24 @@ const categories = [
     },
     {
         id: "electronics",
-        name: "Dien Tu",
-        description: "Dien thoai, may tinh bang...",
+        name: "Điện Tử",
+        description: "Điện thoại, máy tính bảng...",
         icon: Smartphone,
         productCount: 120,
         href: "#electronics",
     },
     {
         id: "clothing",
-        name: "Quan Ao",
-        description: "Ao, quan, vay, dam...",
+        name: "Quần Áo",
+        description: "Áo, quần, váy, đầm...",
         icon: Shirt,
         productCount: 230,
         href: "#clothing",
     },
     {
         id: "accessories",
-        name: "Phu Kien",
-        description: "Chuot, ban phim, USB...",
+        name: "Phụ Kiện",
+        description: "Chuột, bàn phím, USB...",
         icon: Mouse,
         productCount: 180,
         href: "#accessories",
@@ -42,10 +42,10 @@ export function Category() {
             <div className="mx-auto max-w-7xl px-4 md:px-6">
                 <div className="mb-12 text-center">
                     <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
-                        Danh muc
+                        Danh mục
                     </p>
                     <h2 className="mt-2 font-serif text-3xl font-bold tracking-tight md:text-4xl">
-                        Kham pha theo danh muc
+                        Khám phá theo danh mục
                     </h2>
                 </div>
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -59,12 +59,12 @@ export function Category() {
                                 <category.icon className="h-6 w-6 text-foreground" />
                             </div>
                             <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                                {category.productCount} san pham
+                                {category.productCount} sản phẩm
                             </p>
                             <h3 className="mt-1 text-xl font-semibold">{category.name}</h3>
                             <p className="mt-2 text-sm text-muted-foreground">{category.description}</p>
                             <div className="mt-4 text-sm font-medium text-accent opacity-0 transition-opacity group-hover:opacity-100">
-                                Xem tat ca &rarr;
+                                Xem tất cả &rarr;
                             </div>
                         </Link>
                     ))}

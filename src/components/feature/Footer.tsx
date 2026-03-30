@@ -22,20 +22,20 @@ const Youtube = (props: SVGProps<SVGSVGElement>) => (
 const footerLinks = {
   sanPham: [
     { name: "Laptop", href: "#laptops" },
-    { name: "Dien Tu", href: "#electronics" },
-    { name: "Quan Ao", href: "#clothing" },
-    { name: "Phu Kien", href: "#accessories" },
+    { name: "Điện Tử", href: "#electronics" },
+    { name: "Quần Áo", href: "#clothing" },
+    { name: "Phụ Kiện", href: "#accessories" },
   ],
   hoTro: [
-    { name: "Huong dan mua hang", href: "#" },
-    { name: "Chinh sach doi tra", href: "#" },
-    { name: "Chinh sach bao hanh", href: "#" },
-    { name: "Phuong thuc thanh toan", href: "#" },
+    { name: "Hướng dẫn mua hàng", href: "#" },
+    { name: "Chính sách đổi trả", href: "#" },
+    { name: "Chính sách bảo hành", href: "#" },
+    { name: "Phương thức thanh toán", href: "#" },
   ],
   veTechMart: [
-    { name: "Gioi thieu", href: "#" },
-    { name: "Tuyen dung", href: "#" },
-    { name: "Lien he", href: "#" },
+    { name: "Giới thiệu", href: "#" },
+    { name: "Tuyển dụng", href: "#" },
+    { name: "Liên hệ", href: "#" },
     { name: "Blog", href: "#" },
   ],
 }
@@ -51,8 +51,8 @@ export function Footer() {
               <span className="font-serif text-2xl font-bold">TechMart</span>
             </Link>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
-              Cung cap san pham cong nghe, thoi trang va phu kien chat luong cao
-              voi gia ca tot nhat thi truong.
+              Cung cấp sản phẩm công nghệ, thời trang và phụ kiện chất lượng cao
+              với giá cả tốt nhất thị trường.
             </p>
             <div className="mt-6 flex gap-4">
               <Link
@@ -84,7 +84,7 @@ export function Footer() {
 
           {/* Links */}
           <div>
-            <h3 className="font-semibold">San Pham</h3>
+            <h3 className="font-semibold">Sản Phẩm</h3>
             <ul className="mt-4 space-y-3">
               {footerLinks.sanPham.map((link) => (
                 <li key={link.name}>
@@ -100,7 +100,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-semibold">Ho Tro</h3>
+            <h3 className="font-semibold">Hỗ Trợ</h3>
             <ul className="mt-4 space-y-3">
               {footerLinks.hoTro.map((link) => (
                 <li key={link.name}>
@@ -116,7 +116,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-semibold">Ve TechMart</h3>
+            <h3 className="font-semibold">Về TechMart</h3>
             <ul className="mt-4 space-y-3">
               {footerLinks.veTechMart.map((link) => (
                 <li key={link.name}>
@@ -136,7 +136,7 @@ export function Footer() {
         <div className="mt-12 flex flex-wrap gap-6 border-t border-border pt-8">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <MapPin className="h-4 w-4" />
-            <span>123 Nguyen Hue, Quan 1, TP.HCM</span>
+            <span>123 Nguyễn Huệ, Quận 1, TP.HCM</span>
           </div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Phone className="h-4 w-4" />
@@ -150,7 +150,7 @@ export function Footer() {
 
         {/* Copyright */}
         <div className="mt-8 border-t border-border pt-8 text-center text-sm text-muted-foreground">
-          <p>&copy; 2026 TechMart. Tat ca quyen duoc bao luu.</p>
+          <p>&copy; 2026 TechMart. Tất cả quyền được bảo lưu.</p>
         </div>
       </div>
     </footer>

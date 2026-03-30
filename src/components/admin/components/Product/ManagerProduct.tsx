@@ -52,10 +52,10 @@ interface ApiProduct {
 }
 
 const categoryMap: Record<string, string> = {
-    "electronics": "Dien Tu",
-    "jewelery": "Trang Suc",
-    "men's clothing": "Quan Ao Nam",
-    "women's clothing": "Quan Ao Nu",
+    "electronics": "Điện Tử",
+    "jewelery": "Trang Sức",
+    "men's clothing": "Quần Áo Nam",
+    "women's clothing": "Quần Áo Nữ",
 }
 
 const ITEMS_PER_PAGE = 10
@@ -127,10 +127,10 @@ export default function ManagerProduct() {
     const getCategoryCounts = () => {
         return {
             all: products.length,
-            "Dien Tu": products.filter((p) => categoryMap[p.category] === "Dien Tu").length,
-            "Trang Suc": products.filter((p) => categoryMap[p.category] === "Trang Suc").length,
-            "Quan Ao Nam": products.filter((p) => categoryMap[p.category] === "Quan Ao Nam").length,
-            "Quan Ao Nu": products.filter((p) => categoryMap[p.category] === "Quan Ao Nu").length,
+            "Điện Tử": products.filter((p) => categoryMap[p.category] === "Điện Tử").length,
+            "Trang Sức": products.filter((p) => categoryMap[p.category] === "Trang Sức").length,
+            "Quần Áo Nam": products.filter((p) => categoryMap[p.category] === "Quần Áo Nam").length,
+            "Quần Áo Nữ": products.filter((p) => categoryMap[p.category] === "Quần Áo Nữ").length,
         }
     }
 
@@ -140,74 +140,74 @@ export default function ManagerProduct() {
         <div className="p-6 lg:p-8">
             <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <h1 className="font-serif text-3xl font-bold">San pham</h1>
-                    <p className="text-muted-foreground">Quan ly tat ca san pham cua cua hang</p>
+                    <h1 className="font-serif text-3xl font-bold">Sản phẩm</h1>
+                    <p className="text-muted-foreground">Quản lý tất cả sản phẩm của cửa hàng</p>
                 </div>
                 <Dialog>
                     <DialogTrigger asChild>
                         <Button className="gap-2">
                             <Plus className="h-4 w-4" />
-                            Them san pham
+                            Thêm sản phẩm
                         </Button>
                     </DialogTrigger>
                     <DialogContent className="max-w-2xl">
                         <DialogHeader>
-                            <DialogTitle>Them san pham moi</DialogTitle>
+                            <DialogTitle>Thêm sản phẩm mới</DialogTitle>
                             <DialogDescription>
-                                Dien day du thong tin de them san pham moi vao cua hang
+                                Điền đầy đủ thông tin để thêm sản phẩm mới vào cửa hàng
                             </DialogDescription>
                         </DialogHeader>
                         <FieldGroup className="gap-4">
                             <Field>
-                                <FieldLabel>Ten san pham</FieldLabel>
-                                <Input placeholder="Nhap ten san pham" />
+                                <FieldLabel>Tên sản phẩm</FieldLabel>
+                                <Input placeholder="Nhập tên sản phẩm" />
                             </Field>
                             <div className="grid gap-4 sm:grid-cols-2">
                                 <Field>
-                                    <FieldLabel>Gia ban (USD)</FieldLabel>
+                                    <FieldLabel>Giá bán (USD)</FieldLabel>
                                     <Input type="number" placeholder="0" />
                                 </Field>
                                 <Field>
-                                    <FieldLabel>So luong</FieldLabel>
+                                    <FieldLabel>Số lượng</FieldLabel>
                                     <Input type="number" placeholder="0" />
                                 </Field>
                             </div>
                             <div className="grid gap-4 sm:grid-cols-2">
                                 <Field>
-                                    <FieldLabel>Danh muc</FieldLabel>
+                                    <FieldLabel>Danh mục</FieldLabel>
                                     <Select>
                                         <SelectTrigger>
-                                            <SelectValue placeholder="Chon danh muc" />
+                                            <SelectValue placeholder="Chọn danh mục" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="electronics">Dien Tu</SelectItem>
-                                            <SelectItem value="jewelery">Trang Suc</SelectItem>
-                                            <SelectItem value="men's clothing">Quan Ao Nam</SelectItem>
-                                            <SelectItem value="women's clothing">Quan Ao Nu</SelectItem>
+                                            <SelectItem value="electronics">Điện Tử</SelectItem>
+                                            <SelectItem value="jewelery">Trang Sức</SelectItem>
+                                            <SelectItem value="men's clothing">Quần Áo Nam</SelectItem>
+                                            <SelectItem value="women's clothing">Quần Áo Nữ</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </Field>
                                 <Field>
-                                    <FieldLabel>Trang thai</FieldLabel>
+                                    <FieldLabel>Trạng thái</FieldLabel>
                                     <Select>
                                         <SelectTrigger>
-                                            <SelectValue placeholder="Chon trang thai" />
+                                            <SelectValue placeholder="Chọn trạng thái" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="active">Dang ban</SelectItem>
-                                            <SelectItem value="draft">Nhap</SelectItem>
+                                            <SelectItem value="active">Đang bán</SelectItem>
+                                            <SelectItem value="draft">Nháp</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </Field>
                             </div>
                             <Field>
-                                <FieldLabel>Mo ta</FieldLabel>
-                                <Input placeholder="Nhap mo ta san pham" />
+                                <FieldLabel>Mô tả</FieldLabel>
+                                <Input placeholder="Nhập mô tả sản phẩm" />
                             </Field>
                         </FieldGroup>
                         <DialogFooter>
-                            <Button variant="outline">Huy</Button>
-                            <Button>Luu san pham</Button>
+                            <Button variant="outline">Hủy</Button>
+                            <Button>Lưu sản phẩm</Button>
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>
@@ -218,18 +218,18 @@ export default function ManagerProduct() {
                     <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                         <Tabs value={activeTab} onValueChange={handleTabChange}>
                             <TabsList className="h-auto flex-wrap">
-                                <TabsTrigger value="all">Tat ca ({counts.all})</TabsTrigger>
-                                <TabsTrigger value="Dien Tu">Dien Tu ({counts["Dien Tu"]})</TabsTrigger>
-                                <TabsTrigger value="Trang Suc">Trang Suc ({counts["Trang Suc"]})</TabsTrigger>
-                                <TabsTrigger value="Quan Ao Nam">Nam ({counts["Quan Ao Nam"]})</TabsTrigger>
-                                <TabsTrigger value="Quan Ao Nu">Nu ({counts["Quan Ao Nu"]})</TabsTrigger>
+                                <TabsTrigger value="all">Tất cả ({counts.all})</TabsTrigger>
+                                <TabsTrigger value="Điện Tử">Điện Tử ({counts["Điện Tử"]})</TabsTrigger>
+                                <TabsTrigger value="Trang Sức">Trang Sức ({counts["Trang Sức"]})</TabsTrigger>
+                                <TabsTrigger value="Quần Áo Nam">Nam ({counts["Quần Áo Nam"]})</TabsTrigger>
+                                <TabsTrigger value="Quần Áo Nữ">Nữ ({counts["Quần Áo Nữ"]})</TabsTrigger>
                             </TabsList>
                         </Tabs>
                         <div className="flex items-center gap-2">
                             <div className="relative">
                                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                                 <Input
-                                    placeholder="Tim kiem..."
+                                    placeholder="Tìm kiếm..."
                                     className="w-[200px] pl-8"
                                     value={searchQuery}
                                     onChange={(e) => {
@@ -257,10 +257,10 @@ export default function ManagerProduct() {
                                                 onCheckedChange={toggleAll}
                                             />
                                         </TableHead>
-                                        <TableHead>San pham</TableHead>
-                                        <TableHead>Danh muc</TableHead>
-                                        <TableHead>Gia</TableHead>
-                                        <TableHead className="hidden md:table-cell">Danh gia</TableHead>
+                                        <TableHead>Sản phẩm</TableHead>
+                                        <TableHead>Danh mục</TableHead>
+                                        <TableHead>Giá</TableHead>
+                                        <TableHead className="hidden md:table-cell">Đánh giá</TableHead>
                                         <TableHead className="w-12"></TableHead>
                                     </TableRow>
                                 </TableHeader>
@@ -316,11 +316,11 @@ export default function ManagerProduct() {
                                                         </DropdownMenuItem>
                                                         <DropdownMenuItem>
                                                             <Pencil className="mr-2 h-4 w-4" />
-                                                            Sua
+                                                            Sửa
                                                         </DropdownMenuItem>
                                                         <DropdownMenuItem className="text-destructive">
                                                             <Trash2 className="mr-2 h-4 w-4" />
-                                                            Xoa
+                                                            Xóa
                                                         </DropdownMenuItem>
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>
@@ -334,7 +334,7 @@ export default function ManagerProduct() {
                             {totalPages > 1 && (
                                 <div className="mt-6 flex flex-col items-center gap-2 sm:flex-row sm:justify-between">
                                     <p className="text-sm text-muted-foreground">
-                                        Hien thi {startIndex + 1}-{Math.min(startIndex + ITEMS_PER_PAGE, filteredProducts.length)} trong {filteredProducts.length} san pham
+                                        Hiển thị {startIndex + 1}-{Math.min(startIndex + ITEMS_PER_PAGE, filteredProducts.length)} trong {filteredProducts.length} sản phẩm
                                     </p>
                                     <div className="flex items-center gap-2">
                                         <Button
@@ -344,7 +344,7 @@ export default function ManagerProduct() {
                                             disabled={currentPage === 1}
                                         >
                                             <ChevronLeft className="mr-1 h-4 w-4" />
-                                            Truoc
+                                            Trước
                                         </Button>
                                         <div className="flex items-center gap-1">
                                             {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
@@ -374,7 +374,7 @@ export default function ManagerProduct() {
 
                             {filteredProducts.length === 0 && (
                                 <div className="py-12 text-center">
-                                    <p className="text-muted-foreground">Khong tim thay san pham</p>
+                                    <p className="text-muted-foreground">Không tìm thấy sản phẩm</p>
                                 </div>
                             )}
                         </>

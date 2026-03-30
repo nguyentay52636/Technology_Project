@@ -13,7 +13,7 @@ export default function HomePage() {
             <Hero />
             <Features />
             <Category />
-            <GridProduct />
+            {/* <GridProduct /> */}
 
         </>
     )

@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react"
 import { toast } from "sonner"
-import { productApi, type Product } from "@/app/apis/productApi"
+import { productApi, type Product } from "@/apis/productApi"
 
 export function useProduct() {
     const [products, setProducts] = useState<Product[]>([])

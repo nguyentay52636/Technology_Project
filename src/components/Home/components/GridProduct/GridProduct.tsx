@@ -9,24 +9,24 @@ import { TabsList, TabsTrigger, Tabs } from "@/components/ui/tabs"
 import { CardProduct } from "./components/CardProduct"
 import { useProduct } from "@/hooks/useProduct"
 
-const categories = ["Tat ca", "Dien Tu", "Trang Suc", "Quan Ao Nam", "Quan Ao Nu"]
+const categories = ["Tất cả", "Điện Tử", "Trang Sức", "Quần Áo Nam", "Quần Áo Nữ"]
 
 const ITEMS_PER_PAGE = 8
 
 export function GridProduct() {
-    const [activeCategory, setActiveCategory] = useState("Tat ca")
+    const [activeCategory, setActiveCategory] = useState("Tất cả")
     const { products, loading } = useProduct()
     const [currentPage, setCurrentPage] = useState(1)
 
     const categoryMap: Record<string, string> = {
-        "electronics": "Dien Tu",
-        "jewelery": "Trang Suc",
-        "men's clothing": "Quan Ao Nam",
-        "women's clothing": "Quan Ao Nu",
+        "electronics": "Điện Tử",
+        "jewelery": "Trang Sức",
+        "men's clothing": "Quần Áo Nam",
+        "women's clothing": "Quần Áo Nữ",
     }
 
     const filteredProducts =
-        activeCategory === "Tat ca"
+        activeCategory === "Tất cả"
             ? products
             : products.filter((p) => categoryMap[p.category] === activeCategory)
 
@@ -119,13 +119,13 @@ export function GridProduct() {
             <div className="mx-auto max-w-7xl px-4 md:px-6">
                 <div className="mb-12 flex flex-col items-center text-center">
                     <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
-                        Bo suu tap
+                        Bộ sưu tập
                     </p>
                     <h2 className="mt-2 font-serif text-3xl font-bold tracking-tight md:text-4xl">
-                        San pham noi bat
+                        Sản phẩm nổi bật
                     </h2>
                     <p className="mt-4 max-w-2xl text-muted-foreground">
-                        Kham pha nhung san pham duoc yeu thich nhat voi gia tot nhat
+                        Khám phá những sản phẩm được yêu thích nhất với giá tốt nhất
                     </p>
                 </div>
 
@@ -201,7 +201,7 @@ export function GridProduct() {
                                     </Button>
                                 </div>
                                 <p className="text-sm text-muted-foreground">
-                                    Trang {currentPage} / {totalPages} ({filteredProducts.length} san pham)
+                                    Trang {currentPage} / {totalPages} ({filteredProducts.length} sản phẩm)
                                 </p>
                             </div>
                         )}
@@ -209,7 +209,7 @@ export function GridProduct() {
                         {/* Empty State */}
                         {filteredProducts.length === 0 && (
                             <div className="py-20 text-center">
-                                <p className="text-muted-foreground">Khong co san pham trong danh muc nay</p>
+                                <p className="text-muted-foreground">Không có sản phẩm trong danh mục này</p>
                             </div>
                         )}
                     </>

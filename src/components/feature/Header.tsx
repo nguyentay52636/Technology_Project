@@ -22,10 +22,10 @@ import { useCart } from "@/lib/cart-context"
 import { Badge } from "../ui/badge"
 
 const categories = [
-  { name: "Laptop", href: "#laptops" },
-  { name: "Dien Tu", href: "#electronics" },
-  { name: "Quan Ao", href: "#clothing" },
-  { name: "Phu Kien", href: "#accessories" },
+  { name: "Trang Chủ", href: "/" },
+  { name: "Sản Phẩm", href: "/products" },
+  { name: "Giới Thiệu", href: "/about" },
+  { name: "Liên Hệ", href: "/contact" },
 ]
 
 export function Header() {
@@ -45,7 +45,7 @@ export function Header() {
           </SheetTrigger>
           <SheetContent side="left" className="w-[300px]">
             <SheetHeader>
-              <SheetTitle className="font-serif text-xl">Danh Muc</SheetTitle>
+              <SheetTitle className="font-serif text-xl">Danh Mục</SheetTitle>
             </SheetHeader>
             <nav className="mt-6 flex flex-col gap-4">
               {categories.map((category) => (
@@ -86,7 +86,7 @@ export function Header() {
             <div className="flex items-center gap-2">
               <Input
                 type="search"
-                placeholder="Tim kiem..."
+                placeholder="Tìm kiếm..."
                 className="h-9 w-[200px] md:w-[300px]"
                 autoFocus
               />
@@ -97,7 +97,7 @@ export function Header() {
           ) : (
             <Button variant="ghost" size="icon" onClick={() => setSearchOpen(true)}>
               <Search className="h-5 w-5" />
-              <span className="sr-only">Tim kiem</span>
+              <span className="sr-only">Tìm kiếm</span>
             </Button>
           )}
 
@@ -106,15 +106,15 @@ export function Header() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon">
                 <User className="h-5 w-5" />
-                <span className="sr-only">Tai khoan</span>
+                <span className="sr-only">Tài khoản</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem>Dang Nhap</DropdownMenuItem>
-              <DropdownMenuItem>Dang Ky</DropdownMenuItem>
-              <DropdownMenuItem>Don Hang</DropdownMenuItem>
+              <DropdownMenuItem>Đăng Nhập</DropdownMenuItem>
+              <DropdownMenuItem>Đăng Ký</DropdownMenuItem>
+              <DropdownMenuItem>Đơn Hàng</DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/admin">Quan Tri</Link>
+                <Link href="/admin">Quản Trị</Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -135,7 +135,7 @@ export function Header() {
                 {itemCount}
               </Badge>
             )}
-            <span className="sr-only">Gio hang</span>
+            <span className="sr-only">Giỏ hàng</span>
           </Button>
         </div>
       </div>
