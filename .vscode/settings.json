@@ -1,0 +1,4 @@
+{
+    "github.branchProtection": true,
+    "editor.defaultFormatter": "vscode.json-language-features"
+}

@@ -13,8 +13,13 @@ export interface Product {
 
 export const productApi = {
     getProducts: async (): Promise<Product[]> => {
-        const response = await fetch("https://fakestoreapi.com/products")
-        if (!response.ok) throw new Error("Failed to fetch products")
-        return await response.json()
+        const response = await fetch("https://fakestoreapi.com/products");
+
+        if (!response.ok) {
+            throw new Error(`HTTP Error: ${response.status}`)
+        }
+
+        const data = await response.json();
+        return data;
     },
 }
