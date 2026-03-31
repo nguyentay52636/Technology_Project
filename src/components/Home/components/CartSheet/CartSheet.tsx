@@ -11,6 +11,7 @@ import {
     SheetTitle,
 } from "@/components/ui/sheet"
 import { useCart } from "@/lib/cart-context"
+import { toast } from "sonner"
 
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
@@ -135,12 +136,12 @@ export function CartSheet() {
                             </div>
 
                             <div className="flex flex-col gap-2">
-                                <Button size="lg" className="w-full">
+                                <Button size="lg" className="w-full" onClick={() => toast.info("Chức năng thanh toán đang được phát triển!")}>
                                     Thanh toán ({formatPrice(total)})
                                 </Button>
-                                <Button variant="outline" size="lg" className="w-full gap-2" onClick={clearCart}>
+                                <Button variant="outline" size="lg" className="w-full gap-2 text-muted-foreground hover:text-destructive" onClick={clearCart}>
                                     <Trash2 className="h-4 w-4" />
-                                    Xóa giỏ hàng
+                                    Xóa sạch giỏ hàng
                                 </Button>
                             </div>
                         </div>

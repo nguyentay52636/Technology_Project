@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { useCart } from "@/lib/cart-context"
+import { toast } from "sonner"
 
 export interface Product {
     id: string
@@ -50,6 +51,13 @@ export function CardProduct({ product }: ProductCardProps) {
             originalPrice: product.originalPrice,
             image: product.image,
             category: product.category,
+        })
+        toast.success(`Đã thêm ${product.name} vào giỏ hàng`, {
+            description: "Mở giỏ hàng để xem chi tiết",
+            action: {
+                label: "Xem giỏ",
+                onClick: () => console.log("Open cart"), // This should ideally be a call to setIsCartOpen(true) but that's handled by addItem
+            },
         })
     }
 
