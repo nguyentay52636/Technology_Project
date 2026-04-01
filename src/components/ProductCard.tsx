@@ -2,6 +2,8 @@
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import type { Product } from '@/apis/productApi';
+import { useCart } from '@/lib/cart-context';
+import { toast } from 'sonner';
 
 // Định nghĩa kiểu dữ liệu cho Props
 interface ProductCardProps {
@@ -10,6 +12,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const router = useRouter();
+  const { addItem } = useCart();
 
   const handleGoToDetail = () => {
     router.push(`/products/${product.id}`);
@@ -70,7 +73,18 @@ export default function ProductCard({ product }: ProductCardProps) {
       <button
         onClick={(event) => {
           event.stopPropagation();
-          alert(`Đã thêm "${product.title}" vào giỏ hàng!`);
+          addItem({
+            id: String(product.id),
+            name: product.title,
+            price: product.price,
+            image: product.thumbnail,
+            category: product.category,
+            originalPrice:
+              product.discountPercentage > 0
+                ? product.price / (1 - product.discountPercentage / 100)
+                : undefined,
+          });
+          toast.success(`Đã thêm "${product.title}" vào giỏ hàng!`);
         }}
         className="mt-4 bg-red-50 text-red-500 border border-red-200 px-4 py-2 rounded-lg hover:bg-red-500 hover:text-white transition font-medium flex items-center justify-center gap-2"
       >
