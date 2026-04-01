@@ -1,6 +1,6 @@
 'use client';
-import { useState } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import type { Product } from '@/apis/productApi';
 
 // Định nghĩa kiểu dữ liệu cho Props
@@ -8,30 +8,71 @@ interface ProductCardProps {
   product: Product;
 }
 
-// 1. COMPONENT & PROPS: Nhận dữ liệu thông qua tham số (Props)
 export default function ProductCard({ product }: ProductCardProps) {
+  const router = useRouter();
 
+  const handleGoToDetail = () => {
+    router.push(`/products/${product.id}`);
+  };
 
   return (
-    <div className="border border-gray-200 p-5 rounded-xl shadow-sm hover:shadow-md transition bg-white h-full flex flex-col">
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={handleGoToDetail}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          handleGoToDetail();
+        }
+      }}
+      className="border border-gray-200 p-5 rounded-xl shadow-sm hover:shadow-md transition bg-white h-full flex flex-col cursor-pointer"
+    >
       <div className="relative h-52 w-full mb-4 rounded-lg bg-gray-100 overflow-hidden">
         <Image
-          src={product.image}
+          src={product.thumbnail}
           alt={product.title}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 25vw"
-          className="object-contain p-4"
+          className="object-contain p-4 transition-transform hover:scale-110"
         />
+        
+        {product.discountPercentage > 0 && (
+          <span className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
+            -{product.discountPercentage}%
+          </span>
+        )}
       </div>
 
-      <h2 className="text-xl font-bold text-gray-800 line-clamp-2 min-h-14">{product.title}</h2>
-      <p className="text-gray-500 mt-2 text-sm line-clamp-4 flex-1">{product.description}</p>
-      <p className="text-blue-600 font-bold mt-3">{product.price.toLocaleString('vi-VN')} VNĐ</p>
+      <h2 className="text-xl font-bold text-gray-800 line-clamp-2 min-h-14">
+        {product.title}
+      </h2>
+
+      <div className="flex items-center gap-1 mb-1">
+        <span className="text-yellow-500 text-sm">⭐</span>
+        <span className="text-sm text-gray-600 font-medium">{product.rating}</span>
+        <span className="text-xs text-gray-400">({product.stock} còn lại)</span>
+      </div>
+
+      <p className="text-gray-500 mt-1 text-sm line-clamp-3 flex-1">
+        {product.description}
+      </p>
+
+      <div className="mt-3">
+        <p className="text-blue-600 font-bold text-lg">
+          {product.price.toLocaleString('vi-VN')} $
+        </p>
+        {product.brand?.trim() && (
+          <span className="text-xs text-gray-400 italic">Thương hiệu: {product.brand}</span>
+        )}
+      </div>
       
-      {/* Nút bấm tương tác cập nhật State */}
-      <button 
-        onClick={() => alert(`Đã thêm "${product.title}" vào giỏ hàng!`)}
-        className="mt-4 bg-red-50 text-red-500 border border-red-200 px-4 py-2 rounded-lg hover:bg-red-500 hover:text-white transition flex items-center gap-2"
+      <button
+        onClick={(event) => {
+          event.stopPropagation();
+          alert(`Đã thêm "${product.title}" vào giỏ hàng!`);
+        }}
+        className="mt-4 bg-red-50 text-red-500 border border-red-200 px-4 py-2 rounded-lg hover:bg-red-500 hover:text-white transition font-medium flex items-center justify-center gap-2"
       >
         <span>🛒</span> Thêm vào giỏ hàng
       </button>

@@ -2,7 +2,7 @@
 import { usePathname } from "next/navigation";
 import { Header } from "./feature/Header";
 import { Footer } from "./feature/Footer";
-import { CartSheet } from "./Home/components/CartSheet/CartSheet";
+import { CartSheet } from "./home/CartSheet";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
