@@ -1,97 +1,109 @@
-// src/app/contact/page.tsx
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+
+const contactItems = [
+  {
+    title: "Văn phòng",
+    detail: "Số 123, Đường Công Nghệ, Cầu Giấy, Hà Nội",
+  },
+  {
+    title: "Hotline",
+    detail: "0123 456 789 (08:00 - 21:00)",
+  },
+  {
+    title: "Email",
+    detail: "contact@nextapp.com",
+  },
+];
 
 export default function ContactPage() {
   return (
-    <div className="max-w-7xl mx-auto px-6 pt-32 pb-20 font-sans">
-      
-      {/* Tiêu đề trang */}
-      <section className="text-center mb-16">
-        <h1 className="text-5xl md:text-6xl font-black text-gray-900 dark:text-white mb-6 tracking-tight">
-          Liên hệ với <span className="text-blue-600">chúng tôi</span>
-        </h1>
-        <p className="text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
-          Đội ngũ NextApp luôn sẵn sàng lắng nghe ý kiến và hỗ trợ bạn 24/7. 
-          Đừng ngần ngại gửi tin nhắn cho chúng tôi!
-        </p>
+    <main className="bg-background pb-20">
+      <section className="relative overflow-hidden border-b border-border">
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-100 via-white to-cyan-100 dark:from-slate-900 dark:via-zinc-950 dark:to-slate-900" />
+        <div className="relative mx-auto max-w-7xl px-6 py-18 md:px-10 md:py-24">
+          <div className="max-w-3xl space-y-5">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+              Liên hệ
+            </p>
+            <h1 className="text-4xl font-black tracking-tight sm:text-5xl md:text-6xl">
+              Chúng tôi luôn sẵn sàng hỗ trợ
+            </h1>
+            <p className="text-base leading-7 text-muted-foreground sm:text-lg">
+              Nếu bạn cần tư vấn sản phẩm, báo giá hoặc hỗ trợ kỹ thuật, hãy gửi thông tin qua form bên dưới.
+              Đội ngũ sẽ phản hồi sớm nhất có thể.
+            </p>
+          </div>
+        </div>
       </section>
 
-      <main className="grid md:grid-cols-2 gap-16 items-start">
-        
-        {/* CỘT 1: FORM LIÊN HỆ */}
-        <div className="bg-gray-50 dark:bg-zinc-900 p-8 rounded-3xl border border-gray-100 dark:border-zinc-800">
-          <h2 className="text-2xl font-bold mb-6 dark:text-white">Gửi tin nhắn</h2>
-          <form className="space-y-4">
+      <section className="mx-auto mt-12 grid max-w-7xl gap-6 px-6 md:grid-cols-5 md:px-10">
+        <div className="rounded-3xl border border-border bg-card p-6 shadow-sm md:col-span-3 md:p-8">
+          <h2 className="text-2xl font-bold">Gửi tin nhắn</h2>
+          <form className="mt-6 space-y-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium dark:text-gray-300">Tên của bạn</label>
-              <input 
-                type="text" 
-                placeholder="Nguyễn Văn A" 
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-zinc-700 dark:bg-zinc-800 outline-none focus:ring-2 focus:ring-blue-500 transition"
+              <label htmlFor="name" className="text-sm font-medium text-foreground">
+                Họ và tên
+              </label>
+              <input
+                id="name"
+                type="text"
+                placeholder="Nguyễn Văn A"
+                className="h-11 w-full rounded-xl border border-input bg-background px-3 text-sm outline-none transition focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium dark:text-gray-300">Email</label>
-              <input 
-                type="email" 
-                placeholder="name@example.com" 
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-zinc-700 dark:bg-zinc-800 outline-none focus:ring-2 focus:ring-blue-500 transition"
+              <label htmlFor="email" className="text-sm font-medium text-foreground">
+                Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                placeholder="name@example.com"
+                className="h-11 w-full rounded-xl border border-input bg-background px-3 text-sm outline-none transition focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium dark:text-gray-300">Nội dung</label>
-              <textarea 
-                rows={4} 
-                placeholder="Tôi muốn hỏi về..." 
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-zinc-700 dark:bg-zinc-800 outline-none focus:ring-2 focus:ring-blue-500 transition resize-none"
-              ></textarea>
+              <label htmlFor="message" className="text-sm font-medium text-foreground">
+                Nội dung
+              </label>
+              <textarea
+                id="message"
+                rows={5}
+                placeholder="Tôi cần tư vấn thêm về sản phẩm..."
+                className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm outline-none transition focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+              />
             </div>
-            <button className="w-full bg-blue-600 text-white font-bold py-4 rounded-xl hover:bg-blue-700 transition shadow-lg shadow-blue-500/20 active:scale-[0.98]">
-              Gửi ngay 🚀
-            </button>
+            <Button type="button" size="lg" className="w-full sm:w-auto">
+              Gửi thông tin
+            </Button>
           </form>
         </div>
 
-        {/* CỘT 2: THÔNG TIN TRỰC TIẾP */}
-        <div className="space-y-12 py-4">
-          <div>
-            <h2 className="text-2xl font-bold mb-8 dark:text-white">Thông tin kết nối</h2>
-            <div className="space-y-8">
-              
-              <div className="flex items-start gap-4">
-                <div className="text-2xl">📍</div>
-                <div>
-                  <h4 className="font-bold dark:text-white">Văn phòng chính</h4>
-                  <p className="text-gray-500 dark:text-gray-400 text-sm">Số 123, Đường Công Nghệ, Quận Cầu Giấy, Hà Nội</p>
+        <aside className="space-y-6 md:col-span-2">
+          <div className="rounded-3xl border border-border bg-card p-6 shadow-sm md:p-8">
+            <h3 className="text-xl font-semibold">Thông tin kết nối</h3>
+            <div className="mt-5 space-y-4">
+              {contactItems.map((item) => (
+                <div key={item.title} className="rounded-2xl border border-border/80 bg-muted/30 p-4">
+                  <p className="text-sm font-semibold text-foreground">{item.title}</p>
+                  <p className="mt-1 text-sm text-muted-foreground">{item.detail}</p>
                 </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="text-2xl">📞</div>
-                <div>
-                  <h4 className="font-bold dark:text-white">Hotline hỗ trợ</h4>
-                  <p className="text-gray-500 dark:text-gray-400 text-sm">0123 456 789 (8:00 - 21:00)</p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="text-2xl">✉️</div>
-                <div>
-                  <h4 className="font-bold dark:text-white">Email</h4>
-                  <p className="text-gray-500 dark:text-gray-400 text-sm">contact@nextapp.com</p>
-                </div>
-              </div>
-
+              ))}
             </div>
           </div>
 
-          {/* Bản đồ giả lập hoặc Box trang trí */}
-          <div className="h-48 bg-blue-50 dark:bg-zinc-800 rounded-3xl flex items-center justify-center border-2 border-dashed border-blue-200 dark:border-zinc-700">
-             <p className="text-blue-400 font-medium">Google Map Placeholder</p>
+          <div className="rounded-3xl border border-border bg-gradient-to-br from-slate-900 to-slate-700 p-6 text-white shadow-sm md:p-8">
+            <h3 className="text-xl font-semibold">Cần xem nhanh sản phẩm?</h3>
+            <p className="mt-2 text-sm leading-7 text-slate-100">
+              Trước khi liên hệ, bạn có thể tham khảo danh sách sản phẩm mới để tiết kiệm thời gian.
+            </p>
+            <Button asChild variant="secondary" className="mt-5">
+              <Link href="/products">Đến trang sản phẩm</Link>
+            </Button>
           </div>
-        </div>
-
-      </main>
-    </div>
+        </aside>
+      </section>
+    </main>
   );
 }

@@ -1,63 +1,93 @@
-// src/app/about/page.tsx
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+
+const values = [
+  {
+    title: "Tốc độ và độ ổn định",
+    description:
+      "Tối ưu trải nghiệm mua sắm với giao diện nhanh, dữ liệu rõ ràng và thao tác đơn giản.",
+  },
+  {
+    title: "Sản phẩm đa dạng",
+    description:
+      "Liên tục cập nhật danh mục, thương hiệu và giá cả để người dùng dễ dàng lựa chọn.",
+  },
+  {
+    title: "Hỗ trợ tận tâm",
+    description:
+      "Đội ngũ luôn sẵn sàng tiếp nhận góp ý, nâng cấp tính năng và xử lý vấn đề nhanh chóng.",
+  },
+];
 
 export default function AboutPage() {
   return (
-    
-    <div className="max-w-7xl mx-auto px-6 pt-32 pb-20 font-sans">
-      
-      {/* Phần tiêu đề */}
-      <section className="text-center mb-20">
-        <h1 className="text-5xl md:text-6xl font-black text-gray-900 dark:text-white mb-6 tracking-tight">
-          Câu chuyện của <span className="text-blue-600">NextApp</span>
-        </h1>
-        <p className="text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
-          Chúng tôi xây dựng những nền tảng công nghệ hiện đại nhằm giúp các lập trình viên tiếp cận kiến thức một cách dễ dàng và hiệu quả nhất.
-        </p>
+    <main className="bg-background pb-20">
+      <section className="relative overflow-hidden border-b border-border">
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-100 via-white to-sky-100 dark:from-slate-900 dark:via-zinc-950 dark:to-slate-900" />
+        <div className="relative mx-auto max-w-7xl px-6 py-18 md:px-10 md:py-24">
+          <div className="max-w-3xl space-y-5">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+              Về chúng tôi
+            </p>
+            <h1 className="text-4xl font-black tracking-tight sm:text-5xl md:text-6xl">
+              Công nghệ giúp mua sắm thông minh hơn
+            </h1>
+            <p className="text-base leading-7 text-muted-foreground sm:text-lg">
+              Technology Project được xây dựng để kết nối người dùng với những sản phẩm phù hợp nhất.
+              Chúng tôi tập trung vào sự minh bạch, tốc độ và trải nghiệm sử dụng hiện đại trên mọi thiết bị.
+            </p>
+          </div>
+        </div>
       </section>
 
-      {/* Phần nội dung chi tiết (Layout 2 cột) */}
-      <div className="grid md:grid-cols-2 gap-12 items-center mb-24">
-        <div className="space-y-6">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Sứ mệnh của chúng tôi</h2>
-          <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-            Tại NextApp, chúng tôi tin rằng việc học lập trình không nên là một trở ngại. 
-            Mục tiêu của chúng tôi là cung cấp các công cụ và hướng dẫn tốt nhất về Next.js, 
-            giúp bạn biến ý tưởng thành sản phẩm thực tế chỉ trong thời gian ngắn.
+      <section className="mx-auto mt-12 grid max-w-7xl gap-6 px-6 md:grid-cols-3 md:px-10">
+        {values.map((value) => (
+          <article
+            key={value.title}
+            className="rounded-2xl border border-border bg-card p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+          >
+            <h2 className="mb-3 text-xl font-semibold">{value.title}</h2>
+            <p className="text-sm leading-7 text-muted-foreground">{value.description}</p>
+          </article>
+        ))}
+      </section>
+
+      <section className="mx-auto mt-10 max-w-7xl px-6 md:px-10">
+        <div className="grid gap-6 rounded-3xl border border-border bg-card p-8 md:grid-cols-2 md:p-10">
+          <div>
+            <h3 className="text-2xl font-bold md:text-3xl">Hành trình của chúng tôi</h3>
+            <p className="mt-4 text-sm leading-7 text-muted-foreground md:text-base">
+              Từ một nhóm nhỏ yêu công nghệ, chúng tôi phát triển thành nền tảng thương mại điện tử
+              hướng đến trải nghiệm dễ dùng và hiệu quả. Mọi tính năng được xây dựng dựa trên dữ liệu
+              thực tế và phản hồi của người dùng.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-border bg-gradient-to-br from-slate-900 to-slate-700 p-6 text-white">
+            <p className="text-sm uppercase tracking-[0.2em] text-slate-200">Tầm nhìn</p>
+            <p className="mt-4 text-lg font-semibold leading-8">
+              Trở thành điểm đến mua sắm công nghệ đáng tin cậy, nơi mọi người có thể tìm thấy sản phẩm
+              phù hợp với nhu cầu và ngân sách của mình.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto mt-10 max-w-7xl px-6 md:px-10">
+        <div className="rounded-3xl border border-border bg-muted/30 p-8 text-center md:p-10">
+          <h3 className="text-2xl font-bold md:text-3xl">Sẵn sàng khám phá thêm?</h3>
+          <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-muted-foreground md:text-base">
+            Xem danh sách sản phẩm mới nhất hoặc liên hệ trực tiếp để nhận tư vấn nhanh.
           </p>
-          <ul className="space-y-3">
-            <li className="flex items-center gap-3 text-gray-700 dark:text-gray-300 font-medium">
-              <span className="w-5 h-5 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs">✓</span>
-              Tối ưu hóa hiệu suất ứng dụng
-            </li>
-            <li className="flex items-center gap-3 text-gray-700 dark:text-gray-300 font-medium">
-              <span className="w-5 h-5 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs">✓</span>
-              Cập nhật công nghệ mới nhất
-            </li>
-          </ul>
-        </div>
-        
-        {/* Hình ảnh minh họa hoặc Box trang trí */}
-        <div className="h-64 bg-gray-100 dark:bg-zinc-900 rounded-2xl flex items-center justify-center border border-gray-200 dark:border-zinc-800">
-           <span className="text-gray-400 font-medium italic">[Hình ảnh minh họa]</span>
-        </div>
-      </div>
-
-      {/* Phần kêu gọi hành động (CTA) */}
-      <section className="bg-zinc-50 dark:bg-zinc-900 rounded-3xl p-12 text-center border border-gray-100 dark:border-zinc-800">
-        <h2 className="text-3xl font-bold mb-4 dark:text-white">Bạn đã sẵn sàng bắt đầu chưa?</h2>
-        <p className="text-gray-500 mb-8 max-w-lg mx-auto">
-          Hãy cùng chúng tôi khám phá kho tàng kiến thức và danh sách các sản phẩm tuyệt vời nhất.
-        </p>
-        <div className="flex gap-4 justify-center">
-          <button className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
-            Xem Sản Phẩm
-          </button>
-          <button className="bg-white dark:bg-black border border-gray-200 dark:border-zinc-800 px-8 py-3 rounded-lg font-semibold hover:bg-gray-50 transition">
-            Liên hệ ngay
-          </button>
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+            <Button asChild size="lg">
+              <Link href="/products">Xem sản phẩm</Link>
+            </Button>
+            <Button asChild variant="outline" size="lg">
+              <Link href="/contact">Liên hệ ngay</Link>
+            </Button>
+          </div>
         </div>
       </section>
-    </div>
-  );    
+    </main>
+  );
 }

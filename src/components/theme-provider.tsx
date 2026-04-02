@@ -6,7 +6,7 @@ import { ThemeProvider as NextThemesProvider } from "next-themes"
 // Suppress React 19 "Encountered a script tag" warning for next-themes in development
 if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
     const originalError = console.error
-    console.error = (...args) => {
+    console.error = function(...args: any[]) {
         if (
             typeof args[0] === "string" &&
             args[0].includes("Encountered a script tag while rendering React component")

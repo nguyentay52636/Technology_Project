@@ -10,7 +10,6 @@ export default async function Page() {
 
     return (
         <main className="min-h-screen bg-background">
-            {/* Các component tĩnh không cần State */}
             <Hero />
             <Features />
             <FeaturedProductsSection products={products} />
