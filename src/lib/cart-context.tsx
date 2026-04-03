@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useState, useCallback, ReactNode } from "react"
+import { createContext, useContext, useReducer, useCallback, ReactNode } from "react"
 
 export interface CartItem {
     id: string
@@ -24,59 +24,110 @@ interface CartContextType {
     setIsCartOpen: (open: boolean) => void
 }
 
+type CartState = {
+    items: CartItem[]
+    isCartOpen: boolean
+}
+
+type CartAction =
+    | { type: "ADD_ITEM"; item: Omit<CartItem, "quantity"> }
+    | { type: "REMOVE_ITEM"; id: string }
+    | { type: "UPDATE_QUANTITY"; id: string; quantity: number }
+    | { type: "CLEAR_CART" }
+    | { type: "SET_IS_CART_OPEN"; open: boolean }
+
+const initialState: CartState = {
+    items: [],
+    isCartOpen: false,
+}
+
+function cartReducer(state: CartState, action: CartAction): CartState {
+    switch (action.type) {
+        case "ADD_ITEM": {
+            const existingItem = state.items.find((item) => item.id === action.item.id)
+
+            const items = existingItem
+                ? state.items.map((item) =>
+                      item.id === action.item.id
+                          ? { ...item, quantity: item.quantity + 1 }
+                          : item
+                  )
+                : [...state.items, { ...action.item, quantity: 1 }]
+
+            return {
+                ...state,
+                items,
+            }
+        }
+        case "REMOVE_ITEM":
+            return {
+                ...state,
+                items: state.items.filter((item) => item.id !== action.id),
+            }
+        case "UPDATE_QUANTITY":
+            return {
+                ...state,
+                items:
+                    action.quantity <= 0
+                        ? state.items.filter((item) => item.id !== action.id)
+                        : state.items.map((item) =>
+                              item.id === action.id ? { ...item, quantity: action.quantity } : item
+                          ),
+            }
+        case "CLEAR_CART":
+            return {
+                ...state,
+                items: [],
+            }
+        case "SET_IS_CART_OPEN":
+            return {
+                ...state,
+                isCartOpen: action.open,
+            }
+        default:
+            return state
+    }
+}
+
 const CartContext = createContext<CartContextType | undefined>(undefined)
 
 export function CartProvider({ children }: { children: ReactNode }) {
-    const [items, setItems] = useState<CartItem[]>([])
-    const [isCartOpen, setIsCartOpen] = useState(false)
+    const [state, dispatch] = useReducer(cartReducer, initialState)
 
     const addItem = useCallback((item: Omit<CartItem, "quantity">) => {
-        setItems((currentItems) => {
-            const existingItem = currentItems.find((i) => i.id === item.id)
-            if (existingItem) {
-                return currentItems.map((i) =>
-                    i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
-                )
-            }
-            return [...currentItems, { ...item, quantity: 1 }]
-        })
-        setIsCartOpen(true)
+        dispatch({ type: "ADD_ITEM", item })
     }, [])
 
     const removeItem = useCallback((id: string) => {
-        setItems((currentItems) => currentItems.filter((item) => item.id !== id))
+        dispatch({ type: "REMOVE_ITEM", id })
     }, [])
 
     const updateQuantity = useCallback((id: string, quantity: number) => {
-        if (quantity <= 0) {
-            setItems((currentItems) => currentItems.filter((item) => item.id !== id))
-        } else {
-            setItems((currentItems) =>
-                currentItems.map((item) =>
-                    item.id === id ? { ...item, quantity } : item
-                )
-            )
-        }
+        dispatch({ type: "UPDATE_QUANTITY", id, quantity })
     }, [])
 
     const clearCart = useCallback(() => {
-        setItems([])
+        dispatch({ type: "CLEAR_CART" })
     }, [])
 
-    const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
-    const itemCount = items.reduce((sum, item) => sum + item.quantity, 0)
+    const setIsCartOpen = useCallback((open: boolean) => {
+        dispatch({ type: "SET_IS_CART_OPEN", open })
+    }, [])
+
+    const total = state.items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+    const itemCount = state.items.reduce((sum, item) => sum + item.quantity, 0)
 
     return (
         <CartContext.Provider
             value={{
-                items,
+                items: state.items,
                 addItem,
                 removeItem,
                 updateQuantity,
                 clearCart,
                 total,
                 itemCount,
-                isCartOpen,
+                isCartOpen: state.isCartOpen,
                 setIsCartOpen,
             }
             }

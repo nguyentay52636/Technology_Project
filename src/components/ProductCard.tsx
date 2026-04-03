@@ -12,7 +12,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const router = useRouter();
-  const { addItem } = useCart();
+  const { items, addItem } = useCart();
 
   const handleGoToDetail = () => {
     router.push(`/products/${product.id}`);
@@ -73,6 +73,10 @@ export default function ProductCard({ product }: ProductCardProps) {
       <button
         onClick={(event) => {
           event.stopPropagation();
+          const existingItem = items.find((item) => item.id === String(product.id));
+          const nextQuantity = (existingItem?.quantity ?? 0) + 1;
+          
+
           addItem({
             id: String(product.id),
             name: product.title,
@@ -84,7 +88,9 @@ export default function ProductCard({ product }: ProductCardProps) {
                 ? product.price / (1 - product.discountPercentage / 100)
                 : undefined,
           });
-          toast.success(`Đã thêm "${product.title}" vào giỏ hàng!`);
+          toast.success(
+            `Đã thêm "${product.title}" vào giỏ hàng (x${nextQuantity})`
+          );
         }}
         className="mt-4 bg-red-50 text-red-500 border border-red-200 px-4 py-2 rounded-lg hover:bg-red-500 hover:text-white transition font-medium flex items-center justify-center gap-2"
       >
