@@ -22,6 +22,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import { Skeleton } from "@/components/ui/skeleton"
 
 const emptyForm = {
     title: "",
@@ -122,7 +123,6 @@ function buildPayload(form: ProductFormState): ProductCreateInput {
         thumbnail: form.thumbnail.trim() || images[0] || "",
     }
 }
-
 export default function AdminProductsPage() {
     const [products, setProducts] = useState<Product[]>([])
     const [loading, setLoading] = useState(true)
@@ -200,6 +200,10 @@ export default function AdminProductsPage() {
     const averagePrice = totalProducts > 0
         ? products.reduce((sum, product) => sum + product.price, 0) / totalProducts
         : 0
+
+    if (error) {
+        throw new Error(error)
+    }
 
     const openCreateDialog = () => {
         setEditingProduct(null)
@@ -308,12 +312,26 @@ export default function AdminProductsPage() {
             </div>
 
             {loading ? (
-                <div className="rounded-xl border bg-background p-6 text-sm text-muted-foreground">
-                    Đang tải danh sách sản phẩm...
-                </div>
-            ) : error ? (
-                <div className="rounded-xl border border-destructive/20 bg-destructive/10 p-6 text-sm text-destructive">
-                    {error}
+                <div className="space-y-6">
+                    <div className="grid gap-3 sm:grid-cols-3">
+                        <Skeleton className="h-24 rounded-xl" />
+                        <Skeleton className="h-24 rounded-xl" />
+                        <Skeleton className="h-24 rounded-xl" />
+                    </div>
+
+                    <div className="rounded-xl border bg-background p-4">
+                        <div className="space-y-3">
+                            <Skeleton className="h-10 w-full" />
+                            <Skeleton className="h-10 w-full" />
+                            <Skeleton className="h-10 w-full" />
+                            <Skeleton className="h-10 w-full" />
+                            <Skeleton className="h-10 w-full" />
+                        </div>
+                    </div>
+
+                    <div className="flex justify-center">
+                        <Skeleton className="h-11 w-72 rounded-2xl" />
+                    </div>
                 </div>
             ) : (
                 <div className="rounded-xl border bg-background">
