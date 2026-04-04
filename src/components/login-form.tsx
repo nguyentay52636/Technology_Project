@@ -1,4 +1,10 @@
+"use client"
+
+import Link from "next/link"
+import { FormEvent, useState } from "react"
+import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
+import { usersApi } from "@/apis/usersApi"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -19,25 +25,66 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const router = useRouter()
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setError("")
+    setIsSubmitting(true)
+
+    try {
+      const users = await usersApi.getUsers()
+      const normalizedUsername = username.trim().toLowerCase()
+
+      const matchedUser = users.find(
+        (user) => user.username.toLowerCase() === normalizedUsername && user.password === password
+      )
+
+      if (!matchedUser) {
+        setError("Sai username hoặc mật khẩu.")
+        return
+      }
+
+      const role = matchedUser.role.toLowerCase()
+      if (role === "admin" || role === "moderator") {
+        router.push("/admin")
+        return
+      }
+
+      router.push("/")
+    } catch {
+      setError("Không thể đăng nhập lúc này. Vui lòng thử lại sau.")
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="shadow-lg border-2">
         <CardHeader className="text-center space-y-1">
           <CardTitle className="text-2xl font-bold">Đăng nhập tài khoản</CardTitle>
           <CardDescription>
-            Nhập email của bạn bên dưới để truy cập vào hệ thống
+            Nhập username và mật khẩu để truy cập vào hệ thống
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleSubmit}>
             <FieldGroup className="space-y-4">
               <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
+                <FieldLabel htmlFor="username">Username</FieldLabel>
                 <Input
-                  id="email"
-                  type="email"
-                  placeholder="name@example.com"
+                  id="username"
+                  type="text"
+                  placeholder="Nhập username"
                   className="h-11"
+                  value={username}
+                  onChange={(event) => setUsername(event.target.value)}
+                  autoComplete="username"
                   required
                 />
               </Field>
@@ -51,11 +98,19 @@ export function LoginForm({
                     Quên mật khẩu?
                   </a>
                 </div>
-                <Input id="password" type="password" className="h-11" required />
+                <Input
+                  id="password"
+                  type="password"
+                  className="h-11"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  autoComplete="current-password"
+                  required
+                />
               </Field>
               <Field className="pt-2">
-                <Button type="submit" className="w-full h-11 text-base">
-                  Đăng nhập
+                <Button type="submit" className="w-full h-11 text-base" disabled={isSubmitting}>
+                  {isSubmitting ? "Đang đăng nhập..." : "Đăng nhập"}
                 </Button>
                 <Button variant="outline" type="button" className="w-full h-11 text-base mt-2">
                   <svg
@@ -72,8 +127,13 @@ export function LoginForm({
                   </svg>
                   Đăng nhập với Google
                 </Button>
+                {error ? (
+                  <FieldDescription className="pt-3 text-center text-destructive">
+                    {error}
+                  </FieldDescription>
+                ) : null}
                 <FieldDescription className="text-center pt-4">
-                  Chưa có tài khoản? <a href="/signup" className="underline font-medium hover:text-primary">Đăng ký ngay</a>
+                  Chưa có tài khoản? <Link href="/signup" className="underline font-medium hover:text-primary">Đăng ký ngay</Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>

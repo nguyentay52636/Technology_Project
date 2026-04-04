@@ -30,6 +30,7 @@ const categories = [
 
 export function Header() {
   const [searchOpen, setSearchOpen] = useState(false)
+  const [dropdownOpen, setDropdownOpen] = useState(false)
   const { itemCount, setIsCartOpen } = useCart()
 
   return (
@@ -102,7 +103,7 @@ export function Header() {
           )}
 
           {/* User */}
-          <DropdownMenu>
+          <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon">
                 <User className="h-5 w-5" />
@@ -110,8 +111,12 @@ export function Header() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem>Đăng Nhập</DropdownMenuItem>
-              <DropdownMenuItem>Đăng Ký</DropdownMenuItem>
+              <DropdownMenuItem asChild onClick={() => setDropdownOpen(false)}>
+                <Link href="/login">Đăng Nhập</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild onClick={() => setDropdownOpen(false)}>
+                <Link href="/signup">Đăng Ký</Link>
+              </DropdownMenuItem>
               <DropdownMenuItem>Đơn Hàng</DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link href="/admin">Quản Trị</Link>
