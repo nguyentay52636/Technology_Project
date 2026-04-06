@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Menu, Search, ShoppingCart, User, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -31,7 +31,21 @@ const categories = [
 export function Header() {
   const [searchOpen, setSearchOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [userRole, setUserRole] = useState<string | null>(null)
   const { itemCount, setIsCartOpen } = useCart()
+
+  useEffect(() => {
+    // Get user role from localStorage
+    const storedUser = localStorage.getItem("currentUser")
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser)
+        setUserRole(user.role?.toLowerCase() || null)
+      } catch (error) {
+        console.error("Failed to parse user data:", error)
+      }
+    }
+  }, [])
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -118,9 +132,11 @@ export function Header() {
                 <Link href="/signup">Đăng Ký</Link>
               </DropdownMenuItem>
               <DropdownMenuItem>Đơn Hàng</DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/admin">Quản Trị</Link>
-              </DropdownMenuItem>
+              {(userRole === "admin" || userRole === "mod" || userRole === "moderator") && (
+                <DropdownMenuItem asChild>
+                  <Link href="/admin">Quản Trị</Link>
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
 

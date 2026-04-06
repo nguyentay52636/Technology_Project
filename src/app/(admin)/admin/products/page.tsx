@@ -6,6 +6,7 @@ import { toast } from "sonner"
 import { Pencil, Plus, Search, Trash2, Star } from "lucide-react"
 
 import { productApi, type Product, type ProductCreateInput, type ProductUpdateInput } from "@/apis/productApi"
+import ProductFilters, { type SortOption } from "@/components/Products/ProductFilters"
 import ProductPagination from "@/components/Products/ProductPagination"
 import { Button } from "@/components/ui/button"
 import {
@@ -119,6 +120,7 @@ function buildPayload(form: ProductFormState): ProductCreateInput {
         minimumOrderQuantity: toNumber(form.minimumOrderQuantity),
         images,
         thumbnail: form.thumbnail.trim() || images[0] || "",
+        rating: 0,
     }
 }
 export default function AdminProductsPage() {
@@ -131,6 +133,11 @@ export default function AdminProductsPage() {
     const [saving, setSaving] = useState(false)
     const [editingProduct, setEditingProduct] = useState<Product | null>(null)
     const [form, setForm] = useState<ProductFormState>(emptyForm)
+    const [selectedBrands, setSelectedBrands] = useState<string[]>([])
+    const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+    const [priceRange, setPriceRange] = useState({ min: 0, max: 10000 })
+    const [sortBy, setSortBy] = useState<SortOption>("relevance")
+    const [showFilters, setShowFilters] = useState(true)
 
     useEffect(() => {
         let active = true
@@ -164,28 +171,54 @@ export default function AdminProductsPage() {
         }
     }, [])
 
-    const filteredProducts = useMemo(() => {
-        const query = searchQuery.trim().toLowerCase()
+    const brands = useMemo(() => [...new Set(products.map(p => p.brand).filter(Boolean))].sort(), [products])
+    const categories = useMemo(() => [...new Set(products.map(p => p.category).filter(Boolean))].sort(), [products])
+    const maxPrice = useMemo(() => Math.max(...products.map(p => p.price), 10000), [products])
 
-        if (!query) {
-            return products
-        }
+    const filteredAndSortedProducts = useMemo(() => {
+        let filtered = products.filter(product => {
+            const title = product.title?.toLowerCase() || ""
+            const brand = product.brand?.toLowerCase() || ""
+            const category = product.category?.toLowerCase() || ""
+            const sku = product.sku?.toLowerCase() || ""
+            const description = product.description?.toLowerCase() || ""
+            const searchLower = searchQuery.toLowerCase()
 
-        return products.filter((product) => {
-            return [product.title, product.brand, product.category, product.sku, product.description]
-                .filter(Boolean)
-                .some((value) => value.toLowerCase().includes(query))
+            const matchesSearch = title.includes(searchLower) || brand.includes(searchLower) || category.includes(searchLower) || sku.includes(searchLower) || description.includes(searchLower)
+            const matchesBrand = selectedBrands.length === 0 || (product.brand && selectedBrands.includes(product.brand))
+            const matchesCategory = selectedCategories.length === 0 || (product.category && selectedCategories.includes(product.category))
+            const matchesPrice = product.price >= priceRange.min && product.price <= priceRange.max
+
+            return matchesSearch && matchesBrand && matchesCategory && matchesPrice
         })
-    }, [products, searchQuery])
 
-    const totalPages = Math.max(1, Math.ceil(filteredProducts.length / ITEMS_PER_PAGE))
+        const sorted = [...filtered].sort((a, b) => {
+            switch (sortBy) {
+                case "price-asc":
+                    return a.price - b.price
+                case "price-desc":
+                    return b.price - a.price
+                case "rating-asc":
+                    return a.rating - b.rating
+                case "rating-desc":
+                    return b.rating - a.rating
+                case "relevance":
+                default:
+                    return 0
+            }
+        })
+
+        return sorted
+    }, [products, searchQuery, selectedBrands, selectedCategories, priceRange, sortBy])
+
+    const totalPages = Math.max(1, Math.ceil(filteredAndSortedProducts.length / ITEMS_PER_PAGE))
     const safeCurrentPage = Math.min(currentPage, totalPages)
     const startIndex = (safeCurrentPage - 1) * ITEMS_PER_PAGE
-    const displayedProducts = filteredProducts.slice(startIndex, startIndex + ITEMS_PER_PAGE)
+    const displayedProducts = filteredAndSortedProducts.slice(startIndex, startIndex + ITEMS_PER_PAGE)
 
     useEffect(() => {
         setCurrentPage(1)
-    }, [searchQuery])
+    }, [searchQuery, selectedBrands, selectedCategories, priceRange, sortBy])
 
     useEffect(() => {
         if (currentPage > totalPages) {
@@ -261,7 +294,26 @@ export default function AdminProductsPage() {
             toast.error(message)
         }
     }
+    const handleBrandToggle = (brand: string) => {
+        setSelectedBrands(prev =>
+            prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand]
+        )
+    }
 
+    const handleCategoryToggle = (category: string) => {
+        setSelectedCategories(prev =>
+            prev.includes(category) ? prev.filter(c => c !== category) : [...prev, category]
+        )
+    }
+
+    const handleResetFilters = () => {
+        setSearchQuery("")
+        setSelectedBrands([])
+        setSelectedCategories([])
+        setPriceRange({ min: 0, max: maxPrice })
+        setSortBy("relevance")
+        setCurrentPage(1)
+    }
     return (
         <div className="space-y-6 p-6 md:p-8">
             <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
@@ -302,6 +354,9 @@ export default function AdminProductsPage() {
                             className="pl-9"
                         />
                     </div>
+                    <Button variant="outline" onClick={() => setShowFilters(!showFilters)}>
+                        {showFilters ? "Ẩn bộ lọc" : "Hiện bộ lọc"}
+                    </Button>
                     <Button onClick={openCreateDialog}>
                         <Plus className="h-4 w-4" />
                         Thêm sản phẩm
@@ -332,7 +387,32 @@ export default function AdminProductsPage() {
                     </div>
                 </div>
             ) : (
-                <div className="rounded-xl border bg-background">
+                <div className="flex gap-6">
+                    {/* Filter Sidebar */}
+                    {showFilters && (
+                        <ProductFilters
+                            sortBy={sortBy}
+                            onSortChange={(value) => setSortBy(value)}
+                            priceRange={priceRange}
+                            onPriceChange={(range) => setPriceRange(range)}
+                            maxPrice={maxPrice}
+                            selectedBrands={selectedBrands}
+                            onBrandToggle={handleBrandToggle}
+                            brands={brands}
+                            selectedCategories={selectedCategories}
+                            onCategoryToggle={handleCategoryToggle}
+                            categories={categories}
+                            onResetFilters={handleResetFilters}
+                        />
+                    )}
+
+                    {/* Products Table Section */}
+                    <div className="flex-1 space-y-4">
+                        <div className="mb-4 text-sm text-gray-600">
+                            Tìm thấy {filteredAndSortedProducts.length} sản phẩm
+                        </div>
+
+                        <div className="rounded-xl border bg-background">
                     <Table>
                         <TableHeader>
                             <TableRow>
@@ -347,7 +427,7 @@ export default function AdminProductsPage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {filteredProducts.length === 0 ? (
+                            {filteredAndSortedProducts.length === 0 ? (
                                 <TableRow>
                                     <TableCell colSpan={8} className="py-10 text-center text-muted-foreground">
                                         Không tìm thấy sản phẩm phù hợp.
@@ -406,17 +486,19 @@ export default function AdminProductsPage() {
                             )}
                         </TableBody>
                     </Table>
+                        </div>
+
+                        {filteredAndSortedProducts.length > 0 ? (
+                            <ProductPagination
+                                currentPage={safeCurrentPage}
+                                totalPages={totalPages}
+                                onPrevious={() => setCurrentPage((page) => Math.max(1, page - 1))}
+                                onNext={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+                            />
+                        ) : null}
+                    </div>
                 </div>
             )}
-
-            {filteredProducts.length > 0 ? (
-                <ProductPagination
-                    currentPage={safeCurrentPage}
-                    totalPages={totalPages}
-                    onPrevious={() => setCurrentPage((page) => Math.max(1, page - 1))}
-                    onNext={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
-                />
-            ) : null}
 
             <Dialog open={dialogOpen} onOpenChange={(open) => (open ? setDialogOpen(true) : closeDialog())}>
                 <DialogContent className="max-h-[90vh] max-w-4xl overflow-y-auto">

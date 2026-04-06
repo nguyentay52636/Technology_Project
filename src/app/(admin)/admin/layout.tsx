@@ -12,7 +12,6 @@ import {
     Package,
     ShoppingCart,
     Users,
-    Settings,
     BarChart3,
     LogOut,
 } from "lucide-react"
@@ -25,9 +24,8 @@ const sidebarItems = [
     { name: "Tong quan", href: "/admin", icon: LayoutDashboard },
     { name: "San pham", href: "/admin/products", icon: Package },
     { name: "Don hang", href: "", icon: ShoppingCart },
-    { name: "Khach hang", href: "", icon: Users },
+    { name: "Khach hang", href: "/admin/customers", icon: Users },
     { name: "Thong ke", href: "", icon: BarChart3 },
-    { name: "Cai dat", href: "", icon: Settings },
 ]
 
 function Sidebar({ className }: { className?: string }) {
