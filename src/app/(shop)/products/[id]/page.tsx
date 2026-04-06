@@ -1,4 +1,6 @@
+import { cache } from "react";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { productApi } from "@/apis/productApi";
 import ProductImageGallery from "./ProductImageGallery";
@@ -7,11 +9,41 @@ interface ProductDetailPageProps {
   params: Promise<{ id: string }>;
 }
 
+const getProductById = cache(async (id: string) => {
+  return productApi.getProductById(id);
+});
+
+export async function generateMetadata({ params }: ProductDetailPageProps): Promise<Metadata> {
+  const { id } = await params;
+
+  try {
+    const product = await getProductById(id);
+    const description = product.description?.trim() || `Chi tiet san pham ${product.title}`;
+
+    return {
+      title: `${product.title} | Technology Project`,
+      description,
+      keywords: [product.category, product.brand, ...product.tags].filter(Boolean),
+      openGraph: {
+        title: product.title,
+        description,
+        images: product.thumbnail ? [product.thumbnail] : [],
+        type: "website",
+      },
+    };
+  } catch {
+    return {
+      title: "Khong tim thay san pham | Technology Project",
+      description: "Khong the tai thong tin san pham.",
+    };
+  }
+}
+
 export default async function ProductDetailPage({ params }: ProductDetailPageProps) {
   const { id } = await params;
 
   try {
-    const product = await productApi.getProductById(id);
+    const product = await getProductById(id);
 
     return (
       <div className="mx-auto max-w-6xl px-4 py-10 md:px-6">

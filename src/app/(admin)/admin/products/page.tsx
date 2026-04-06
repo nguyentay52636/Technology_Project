@@ -1,8 +1,9 @@
 "use client"
 
+import Image from "next/image"
 import { useEffect, useMemo, useState } from "react"
 import { toast } from "sonner"
-import { Pencil, Plus, Search, Trash2 } from "lucide-react"
+import { Pencil, Plus, Search, Trash2, Star } from "lucide-react"
 
 import { productApi, type Product, type ProductCreateInput, type ProductUpdateInput } from "@/apis/productApi"
 import ProductPagination from "@/components/Products/ProductPagination"
@@ -30,7 +31,6 @@ const emptyForm = {
     category: "",
     price: "0",
     discountPercentage: "0",
-    rating: "0",
     stock: "0",
     tags: "",
     brand: "",
@@ -68,7 +68,6 @@ function getInitialForm(product?: Product): ProductFormState {
         category: product.category ?? "",
         price: String(product.price ?? 0),
         discountPercentage: String(product.discountPercentage ?? 0),
-        rating: String(product.rating ?? 0),
         stock: String(product.stock ?? 0),
         tags: product.tags?.join(", ") ?? "",
         brand: product.brand ?? "",
@@ -99,7 +98,6 @@ function buildPayload(form: ProductFormState): ProductCreateInput {
         category: form.category.trim(),
         price: toNumber(form.price),
         discountPercentage: toNumber(form.discountPercentage),
-        rating: toNumber(form.rating),
         stock: toNumber(form.stock),
         tags: form.tags
             .split(",")
@@ -338,6 +336,7 @@ export default function AdminProductsPage() {
                     <Table>
                         <TableHeader>
                             <TableRow>
+                                <TableHead>Hình ảnh</TableHead>
                                 <TableHead>Tiêu đề</TableHead>
                                 <TableHead>Danh mục</TableHead>
                                 <TableHead>Thương hiệu</TableHead>
@@ -350,13 +349,28 @@ export default function AdminProductsPage() {
                         <TableBody>
                             {filteredProducts.length === 0 ? (
                                 <TableRow>
-                                    <TableCell colSpan={7} className="py-10 text-center text-muted-foreground">
+                                    <TableCell colSpan={8} className="py-10 text-center text-muted-foreground">
                                         Không tìm thấy sản phẩm phù hợp.
                                     </TableCell>
                                 </TableRow>
                             ) : (
                                 displayedProducts.map((product) => (
                                     <TableRow key={product.id}>
+                                        <TableCell>
+                                            {product.thumbnail ? (
+                                                <Image
+                                                    src={product.thumbnail}
+                                                    alt={product.title}
+                                                    width={48}
+                                                    height={48}
+                                                    className="h-12 w-12 object-cover rounded"
+                                                />
+                                            ) : (
+                                                <div className="h-12 w-12 bg-muted rounded flex items-center justify-center">
+                                                    <span className="text-xs text-muted-foreground">Không</span>
+                                                </div>
+                                            )}
+                                        </TableCell>
                                         <TableCell className="max-w-[280px]">
                                             <div className="space-y-1">
                                                 <p className="font-medium leading-tight">{product.title}</p>
@@ -369,7 +383,12 @@ export default function AdminProductsPage() {
                                         <TableCell>{product.brand || "-"}</TableCell>
                                         <TableCell>{product.price.toLocaleString("vi-VN")}</TableCell>
                                         <TableCell>{product.stock}</TableCell>
-                                        <TableCell>{product.rating}</TableCell>
+                                        <TableCell>
+                                            <div className="flex items-center gap-1">
+                                                <span>{product.rating}</span>
+                                                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                                            </div>
+                                        </TableCell>
                                         <TableCell>
                                             <div className="flex justify-end gap-2">
                                                 <Button variant="outline" size="sm" onClick={() => openEditDialog(product)}>
@@ -424,9 +443,6 @@ export default function AdminProductsPage() {
                             </Field>
                             <Field label="Giảm giá (%)">
                                 <Input type="number" min="0" step="0.01" value={form.discountPercentage} onChange={(event) => setForm({ ...form, discountPercentage: event.target.value })} />
-                            </Field>
-                            <Field label="Đánh giá">
-                                <Input type="number" min="0" max="5" step="0.1" value={form.rating} onChange={(event) => setForm({ ...form, rating: event.target.value })} />
                             </Field>
                             <Field label="Tồn kho">
                                 <Input type="number" min="0" value={form.stock} onChange={(event) => setForm({ ...form, stock: event.target.value })} />
