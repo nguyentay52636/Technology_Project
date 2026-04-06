@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import { Menu, Search, ShoppingCart, User, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -20,6 +20,33 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useCart } from "@/lib/cart-context"
 import { Badge } from "../ui/badge"
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
+
+type StoredUser = {
+  firstName?: string
+  lastName?: string
+  username?: string
+  image?: string
+  role?: string
+}
+
+const getStoredUser = (): StoredUser | null => {
+  if (typeof window === "undefined") {
+    return null
+  }
+
+  const storedUser = localStorage.getItem("currentUser")
+  if (!storedUser) {
+    return null
+  }
+
+  try {
+    return JSON.parse(storedUser) as StoredUser
+  } catch (error) {
+    console.error("Failed to parse user data:", error)
+    return null
+  }
+}
 
 const categories = [
   { name: "Trang Chủ", href: "/" },
@@ -31,21 +58,38 @@ const categories = [
 export function Header() {
   const [searchOpen, setSearchOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
-  const [userRole, setUserRole] = useState<string | null>(null)
+  const [currentUser, setCurrentUser] = useState<StoredUser | null>(null)
   const { itemCount, setIsCartOpen } = useCart()
 
+  const userRole = currentUser?.role?.toLowerCase() ?? null
+  const isAdminOrModerator = userRole === "admin" || userRole === "moderator"
+  const isLoggedIn = Boolean(currentUser)
+  const displayLastName = currentUser?.lastName || currentUser?.username || "Tài khoản"
+  const displayInitial =
+    currentUser?.lastName?.charAt(0) || currentUser?.firstName?.charAt(0) || "U"
+
   useEffect(() => {
-    // Get user role from localStorage
-    const storedUser = localStorage.getItem("currentUser")
-    if (storedUser) {
-      try {
-        const user = JSON.parse(storedUser)
-        setUserRole(user.role?.toLowerCase() || null)
-      } catch (error) {
-        console.error("Failed to parse user data:", error)
-      }
+    const syncAuthUser = () => {
+      setCurrentUser(getStoredUser())
+    }
+
+    syncAuthUser()
+    window.addEventListener("storage", syncAuthUser)
+    window.addEventListener("auth-changed", syncAuthUser)
+
+    return () => {
+      window.removeEventListener("storage", syncAuthUser)
+      window.removeEventListener("auth-changed", syncAuthUser)
     }
   }, [])
+
+  const handleLogout = () => {
+    localStorage.removeItem("currentUser")
+    localStorage.removeItem("accessToken")
+    localStorage.removeItem("refreshToken")
+    window.dispatchEvent(new Event("auth-changed"))
+    setDropdownOpen(false)
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -119,24 +163,43 @@ export function Header() {
           {/* User */}
           <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <User className="h-5 w-5" />
+              <Button
+                variant="ghost"
+                size={isLoggedIn ? "default" : "icon"}
+                className={isLoggedIn ? "h-9 px-2" : undefined}
+              >
+                {isLoggedIn ? (
+                  <>
+                    <Avatar size="sm">
+                      <AvatarImage src={currentUser?.image} alt={displayLastName} />
+                      <AvatarFallback>{displayInitial.toUpperCase()}</AvatarFallback>
+                    </Avatar>
+                    <span className="max-w-[90px] truncate text-sm font-medium">{displayLastName}</span>
+                  </>
+                ) : (
+                  <User className="h-5 w-5" />
+                )}
                 <span className="sr-only">Tài khoản</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem asChild onClick={() => setDropdownOpen(false)}>
-                <Link href="/login">Đăng Nhập</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild onClick={() => setDropdownOpen(false)}>
-                <Link href="/signup">Đăng Ký</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>Đơn Hàng</DropdownMenuItem>
-              {(userRole === "admin" || userRole === "mod" || userRole === "moderator") && (
-                <DropdownMenuItem asChild>
+              {!isLoggedIn && (
+                <>
+                  <DropdownMenuItem asChild onClick={() => setDropdownOpen(false)}>
+                    <Link href="/login">Đăng Nhập</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild onClick={() => setDropdownOpen(false)}>
+                    <Link href="/signup">Đăng Ký</Link>
+                  </DropdownMenuItem>
+                </>
+              )}
+              {!isAdminOrModerator && <DropdownMenuItem>Đơn Hàng</DropdownMenuItem>}
+              {isAdminOrModerator && (
+                <DropdownMenuItem asChild onClick={() => setDropdownOpen(false)}>
                   <Link href="/admin">Quản Trị</Link>
                 </DropdownMenuItem>
               )}
+              {isLoggedIn && <DropdownMenuItem onClick={handleLogout}>Đăng Xuất</DropdownMenuItem>}
             </DropdownMenuContent>
           </DropdownMenu>
 

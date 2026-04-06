@@ -4,7 +4,7 @@ import Link from "next/link"
 import { FormEvent, useState } from "react"
 import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { usersApi } from "@/apis/usersApi"
+import { authApi } from "@/apis/authApi"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -37,27 +37,38 @@ export function LoginForm({
     setIsSubmitting(true)
 
     try {
-      const users = await usersApi.getUsers()
-      const normalizedUsername = username.trim().toLowerCase()
+      const loginResponse = await authApi.login({
+        username: username.trim(),
+        password,
+        expiresInMins: 30,
+      })
 
-      const matchedUser = users.find(
-        (user) => user.username.toLowerCase() === normalizedUsername && user.password === password
-      )
+      const currentUser = await authApi.getCurrentAuthUser(loginResponse.accessToken)
+      const role = currentUser.role?.toLowerCase()
 
-      if (!matchedUser) {
-        setError("Sai username hoặc mật khẩu.")
-        return
-      }
+      localStorage.setItem("accessToken", loginResponse.accessToken)
+      localStorage.setItem("refreshToken", loginResponse.refreshToken)
+      localStorage.setItem("currentUser", JSON.stringify(currentUser))
+      window.dispatchEvent(new Event("auth-changed"))
 
-      const role = matchedUser.role.toLowerCase()
       if (role === "admin" || role === "moderator") {
         router.push("/admin")
         return
       }
 
       router.push("/")
-    } catch {
-      setError("Không thể đăng nhập lúc này. Vui lòng thử lại sau.")
+    } catch (error) {
+      if (error instanceof Error && error.message.toLowerCase().includes("invalid credentials")) {
+        setError("Sai username hoặc mật khẩu.")
+      } else if (error instanceof Error && error.message.toLowerCase().includes("failed to fetch")) {
+        setError("Không kết nối được tới máy chủ đăng nhập. Vui lòng thử lại sau.")
+      } else {
+        setError(
+          error instanceof Error
+            ? `Đăng nhập thất bại: ${error.message}`
+            : "Không thể đăng nhập lúc này. Vui lòng thử lại sau."
+        )
+      }
     } finally {
       setIsSubmitting(false)
     }
