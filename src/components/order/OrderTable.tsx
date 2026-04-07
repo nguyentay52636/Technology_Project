@@ -34,11 +34,11 @@ export function OrderTable({ orders, onViewDetail, onUpdateStatus }: OrderTableP
             <TableHeader>
                 <TableRow>
                     <TableHead className="w-[100px]">Ma don</TableHead>
-                    <TableHead>Khach hang</TableHead>
-                    <TableHead className="hidden lg:table-cell">San pham</TableHead>
-                    <TableHead>Tong tien</TableHead>
-                    <TableHead>Trang thai</TableHead>
-                    <TableHead className="hidden md:table-cell">Thanh toan</TableHead>
+                    <TableHead>Khách hàng</TableHead>
+                    <TableHead className="hidden lg:table-cell">Sản phẩm</TableHead>
+                    <TableHead>Tổng tien</TableHead>
+                    <TableHead>Trạng thái</TableHead>
+                    <TableHead className="hidden md:table-cell">Thanh toán</TableHead>
                     <TableHead className="hidden sm:table-cell">Ngay dat</TableHead>
                     <TableHead className="w-12"></TableHead>
                 </TableRow>
@@ -47,7 +47,7 @@ export function OrderTable({ orders, onViewDetail, onUpdateStatus }: OrderTableP
                 {orders.length === 0 ? (
                     <TableRow>
                         <TableCell colSpan={8} className="py-8 text-center text-muted-foreground">
-                            Khong co don hang nao
+                            Không co đơn hàng nao
                         </TableCell>
                     </TableRow>
                 ) : (
@@ -92,7 +92,7 @@ export function OrderTable({ orders, onViewDetail, onUpdateStatus }: OrderTableP
                                         <p className="truncate text-sm">{order.items[0]?.productTitle}</p>
                                         {order.items.length > 1 && (
                                             <p className="text-xs text-muted-foreground">
-                                                +{order.items.length - 1} san pham khac
+                                                +{order.items.length - 1} sản phẩm khac
                                             </p>
                                         )}
                                     </div>
@@ -151,7 +151,7 @@ export function OrderTable({ orders, onViewDetail, onUpdateStatus }: OrderTableP
                                                 onClick={() => onUpdateStatus(order.id, "completed")}
                                             >
                                                 <CheckCircle className="mr-2 h-4 w-4" />
-                                                Hoan thanh
+                                                Hoàn thành
                                             </DropdownMenuItem>
                                         )}
                                         {order.status !== "completed" && order.status !== "cancelled" && (

@@ -57,7 +57,7 @@ export const usersApi = {
         return data;
     },
 
-    // Use PUT when you want to send the full user payload.
+    // Use PUT when you want to send thẻ full user payload.
     updateUser: async (id: string | number, payload: UserPutInput): Promise<User> => {
         const response = await fetch(`https://dummyjson.com/users/${id}`, {
             method: "PUT",

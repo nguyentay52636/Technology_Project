@@ -80,31 +80,31 @@ export function OrderFiltersComponent({
                         value="pending"
                         className="data-[state=active]:bg-yellow-500 data-[state=active]:text-white"
                     >
-                        Cho xu ly ({stats.pending})
+                        Chờ xử lý ({stats.pending})
                     </TabsTrigger>
                     <TabsTrigger
                         value="processing"
                         className="data-[state=active]:bg-blue-500 data-[state=active]:text-white"
                     >
-                        Dang xu ly ({stats.processing})
+                        Đang xử lý ({stats.processing})
                     </TabsTrigger>
                     <TabsTrigger
                         value="shipping"
                         className="data-[state=active]:bg-purple-500 data-[state=active]:text-white"
                     >
-                        Dang giao ({stats.shipping})
+                        Đang giao ({stats.shipping})
                     </TabsTrigger>
                     <TabsTrigger
                         value="completed"
                         className="data-[state=active]:bg-green-500 data-[state=active]:text-white"
                     >
-                        Hoan thanh ({stats.completed})
+                        Hoàn thành ({stats.completed})
                     </TabsTrigger>
                     <TabsTrigger
                         value="cancelled"
                         className="data-[state=active]:bg-red-500 data-[state=active]:text-white"
                     >
-                        Da huy ({stats.cancelled})
+                        Đã hủy ({stats.cancelled})
                     </TabsTrigger>
                 </TabsList>
             </Tabs>
@@ -140,9 +140,9 @@ export function OrderFiltersComponent({
                             <SelectValue placeholder="Thoi gian" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="today">Hom nay</SelectItem>
-                            <SelectItem value="week">7 ngay qua</SelectItem>
-                            <SelectItem value="month">30 ngay qua</SelectItem>
+                            <SelectItem value="today">Hôm nay</SelectItem>
+                            <SelectItem value="week">7 ngày qua</SelectItem>
+                            <SelectItem value="month">30 ngày qua</SelectItem>
                             <SelectItem value="all">Tat ca</SelectItem>
                         </SelectContent>
                     </Select>

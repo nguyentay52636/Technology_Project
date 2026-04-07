@@ -24,7 +24,7 @@ export function OrderPagination({
     return (
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm text-muted-foreground">
-                Hien thi {startItem}-{endItem} trong {totalItems} don hang
+                Hien thi {startItem}-{endItem}  trong {totalItems} đơn hàng
             </p>
 
             <div className="flex items-center gap-2">

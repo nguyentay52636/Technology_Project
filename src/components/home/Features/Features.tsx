@@ -16,7 +16,7 @@ const features = [
     {
         icon: Clock,
         title: "Giao Hàng Nhanh",
-        description: "Giao hàng trong 24h tại nội thành",
+        description: "Giao hàng  trong 24h tại nội thành",
     },
     {
         icon: Headphones,

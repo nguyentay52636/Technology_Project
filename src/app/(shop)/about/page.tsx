@@ -83,7 +83,7 @@ export default function AboutPage() {
               <Link href="/products">Xem sản phẩm</Link>
             </Button>
             <Button asChild variant="outline" size="lg">
-              <Link href="/contact">Liên hệ ngay</Link>
+              <Link href="/contact">Liên hệ ngày</Link>
             </Button>
           </div>
         </div>

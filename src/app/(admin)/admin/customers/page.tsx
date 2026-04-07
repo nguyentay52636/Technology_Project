@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
-import ProductPagination from "@/components/products/ProductPagination"
+import AppPagination from "@/components/shared/AppPagination"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
 const ITEMS_PER_PAGE = 10
@@ -173,7 +173,7 @@ export default function CustomersPage() {
                         </div>
 
                         {filteredUsers.length > 0 && (
-                            <ProductPagination
+                            <AppPagination
                                 currentPage={safeCurrentPage}
                                 totalPages={totalPages}
                                 onPrevious={() => setCurrentPage((page) => Math.max(1, page - 1))}

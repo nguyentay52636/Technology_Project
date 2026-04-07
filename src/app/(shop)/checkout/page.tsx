@@ -11,19 +11,28 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { useCart } from "@/lib/cart-context"
 import { cn } from "@/lib/utils"
+import { formatPaymentMethod, formatUsdToVnd } from "@/utils/format"
 
-type PaymentMethod = "cash" | "card"
+type PaymentMethod =
+  | "cash_on_delivery"
 
-function formatPrice(price: number) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(price)
+  | "card"
+  | "credit_card"
+
+const PAYMENT_METHOD_OPTIONS: PaymentMethod[] = [
+  "cash_on_delivery",
+
+  "card",
+  "credit_card",
+]
+
+function isCardMethod(method: PaymentMethod): boolean {
+  return ["card", "credit_card"].includes(method)
 }
 
 export default function CheckoutPage() {
   const { items, total, clearCart } = useCart()
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cash")
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cash_on_delivery")
   const [phone, setPhone] = useState("")
   const [address, setAddress] = useState("")
   const [cardNumber, setCardNumber] = useState("")
@@ -47,7 +56,7 @@ export default function CheckoutPage() {
       return false
     }
 
-    return paymentMethod === "cash" ? true : isCardValid
+    return isCardMethod(paymentMethod) ? isCardValid : true
   }, [address, isCardValid, items.length, paymentMethod, phone])
 
   const handleSubmit = () => {
@@ -121,37 +130,29 @@ export default function CheckoutPage() {
             <div className="space-y-3">
               <Label>Phương thức thanh toán</Label>
               <div className="grid gap-3 sm:grid-cols-2">
-                <button
-                  type="button"
-                  className={cn(
-                    "flex items-center gap-2 rounded-lg border p-3 text-left transition",
-                    paymentMethod === "cash"
-                      ? "border-primary bg-primary/5"
-                      : "border-border hover:bg-muted/50"
-                  )}
-                  onClick={() => setPaymentMethod("cash")}
-                >
-                  <Wallet className="h-4 w-4" />
-                  <span>Tiền mặt khi nhận hàng</span>
-                </button>
+                {PAYMENT_METHOD_OPTIONS.map((method) => {
+                  const selected = paymentMethod === method
+                  const Icon = isCardMethod(method) ? CreditCard : Wallet
 
-                <button
-                  type="button"
-                  className={cn(
-                    "flex items-center gap-2 rounded-lg border p-3 text-left transition",
-                    paymentMethod === "card"
-                      ? "border-primary bg-primary/5"
-                      : "border-border hover:bg-muted/50"
-                  )}
-                  onClick={() => setPaymentMethod("card")}
-                >
-                  <CreditCard className="h-4 w-4" />
-                  <span>Thẻ ngân hàng</span>
-                </button>
+                  return (
+                    <button
+                      key={method}
+                      type="button"
+                      className={cn(
+                        "flex items-center gap-2 rounded-lg border p-3 text-left transition",
+                        selected ? "border-primary bg-primary/5" : "border-border hover:bg-muted/50"
+                      )}
+                      onClick={() => setPaymentMethod(method)}
+                    >
+                      <Icon className="h-4 w-4" />
+                      <span>{formatPaymentMethod(method)}</span>
+                    </button>
+                  )
+                })}
               </div>
             </div>
 
-            {paymentMethod === "card" ? (
+            {isCardMethod(paymentMethod) ? (
               <div className="space-y-4 rounded-xl border p-4">
                 <div className="space-y-2">
                   <Label htmlFor="cardNumber">Số thẻ (mô phỏng)</Label>
@@ -208,7 +209,7 @@ export default function CheckoutPage() {
               {items.map((item) => (
                 <div key={item.id} className="flex items-center justify-between gap-2 text-sm">
                   <span className="line-clamp-1">{item.name} x{item.quantity}</span>
-                  <span>{formatPrice(item.price * item.quantity)}</span>
+                  <span>{formatUsdToVnd(item.price * item.quantity)}</span>
                 </div>
               ))}
 
@@ -220,15 +221,15 @@ export default function CheckoutPage() {
             <div className="space-y-1 border-t pt-3 text-sm">
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground">Tạm tính</span>
-                <span>{formatPrice(total)}</span>
+                <span>{formatUsdToVnd(total)}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground">Phí vận chuyển</span>
-                <span>{formatPrice(shippingFee)}</span>
+                <span>{formatUsdToVnd(shippingFee)}</span>
               </div>
               <div className="flex items-center justify-between text-base font-semibold">
                 <span>Tổng cộng</span>
-                <span>{formatPrice(grandTotal)}</span>
+                <span>{formatUsdToVnd(grandTotal)}</span>
               </div>
             </div>
 

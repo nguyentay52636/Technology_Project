@@ -2,19 +2,19 @@
 
 import { Button } from "@/components/ui/button"
 
-interface ProductPaginationProps {
-  currentPage: number;
-  totalPages: number;
-  onPrevious: () => void;
-  onNext: () => void;
+interface AppPaginationProps {
+  currentPage: number
+  totalPages: number
+  onPrevious: () => void
+  onNext: () => void
 }
 
-export default function ProductPagination({
+export default function AppPagination({
   currentPage,
   totalPages,
   onPrevious,
   onNext,
-}: ProductPaginationProps) {
+}: AppPaginationProps) {
   return (
     <div className="mt-8 flex items-center justify-center gap-4 rounded-2xl border border-slate-200 bg-gradient-to-r from-slate-50 via-white to-slate-50 px-4 py-3 shadow-sm">
       <Button
@@ -39,5 +39,5 @@ export default function ProductPagination({
         Next →
       </Button>
     </div>
-  );
+  )
 }

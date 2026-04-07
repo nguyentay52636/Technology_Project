@@ -2,11 +2,12 @@
 
 import { useState, useMemo } from "react";
 import ProductList from "./ProductList";
-import ProductPagination from "./ProductPagination";
+import AppPagination from "@/components/shared/AppPagination";
 import ProductFilters, { type SortOption } from "./ProductFilters";
 import type { Product } from "@/apis/productApi";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { convertUsdToVnd } from "@/utils/format";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -19,14 +20,14 @@ export default function ProductsClient({ products }: ProductsClientProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [priceRange, setPriceRange] = useState({ min: 0, max: 10000 });
+  const [priceRange, setPriceRange] = useState({ min: 0, max: 1_000_000_000 });
   const [sortBy, setSortBy] = useState<SortOption>("relevance");
   const [showFilters, setShowFilters] = useState(true);
 
   // Extract unique brands and categories
   const brands = useMemo(() => [...new Set(products.map(p => p.brand).filter(Boolean))].sort(), [products]);
   const categories = useMemo(() => [...new Set(products.map(p => p.category).filter(Boolean))].sort(), [products]);
-  const maxPrice = useMemo(() => Math.max(...products.map(p => p.price), 10000), [products]);
+  const maxPrice = useMemo(() => Math.max(...products.map(p => convertUsdToVnd(p.price)), 10000), [products]);
 
   // Filter and sort products
   const filteredAndSortedProducts = useMemo(() => {
@@ -48,7 +49,8 @@ export default function ProductsClient({ products }: ProductsClientProps) {
       const matchesCategory = selectedCategories.length === 0 || (product.category && selectedCategories.includes(product.category));
 
       // Price filter
-      const matchesPrice = product.price >= priceRange.min && product.price <= priceRange.max;
+      const priceInVnd = convertUsdToVnd(product.price);
+      const matchesPrice = priceInVnd >= priceRange.min && priceInVnd <= priceRange.max;
 
 
 
@@ -156,7 +158,7 @@ export default function ProductsClient({ products }: ProductsClientProps) {
 
           <ProductList products={displayedProducts} />
 
-          <ProductPagination
+          <AppPagination
             currentPage={currentPage}
             totalPages={totalPages}
             onPrevious={() => setCurrentPage((p) => Math.max(1, p - 1))}

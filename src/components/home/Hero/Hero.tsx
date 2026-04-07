@@ -35,7 +35,7 @@ export function Hero() {
                     <div className="mt-8 flex gap-4">
                         <Button asChild size="lg">
                             <Link href="/products">
-                                Mua sắm ngay <ArrowRight className="ml-2 h-4 w-4" />
+                                Mua sắm ngày <ArrowRight className="ml-2 h-4 w-4" />
                             </Link>
                         </Button>
                     </div>

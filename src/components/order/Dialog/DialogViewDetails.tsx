@@ -49,7 +49,7 @@ export function OrderDetailDialog({
             case "processing":
                 return "Bat dau giao"
             case "shipping":
-                return "Hoan thanh"
+                return "Hoàn thành"
             default:
                 return ""
         }
@@ -62,7 +62,7 @@ export function OrderDetailDialog({
             <DialogContent className="max-w-5xl! max-h-[90vh]">
                 <DialogHeader>
                     <DialogTitle className="flex items-center justify-between">
-                        <span>Chi tiet don hang #{order.id}</span>
+                        <span>Chi tiet đơn hàng #{order.id}</span>
                         <OrderStatusBadge status={order.status} />
                     </DialogTitle>
                 </DialogHeader>
@@ -71,7 +71,7 @@ export function OrderDetailDialog({
                     <div className="space-y-6">
                         {/* Customer Info */}
                         <div className="rounded-lg border p-4">
-                            <h3 className="mb-3 font-semibold">Thong tin khach hang</h3>
+                            <h3 className="mb-3 font-semibold">Thông tin khách hàng</h3>
                             <div className="grid gap-3 sm:grid-cols-2">
                                 <div className="flex items-center gap-2 text-sm">
                                     <Package className="h-4 w-4 text-muted-foreground" />
@@ -94,7 +94,7 @@ export function OrderDetailDialog({
 
                         {/* Order Info */}
                         <div className="rounded-lg border p-4">
-                            <h3 className="mb-3 font-semibold">Thong tin don hang</h3>
+                            <h3 className="mb-3 font-semibold">Thông tin đơn hàng</h3>
                             <div className="grid gap-3 sm:grid-cols-2">
                                 <div className="flex items-center gap-2 text-sm">
                                     <Calendar className="h-4 w-4 text-muted-foreground" />
@@ -102,10 +102,10 @@ export function OrderDetailDialog({
                                 </div>
                                 <div className="flex items-center gap-2 text-sm">
                                     <CreditCard className="h-4 w-4 text-muted-foreground" />
-                                    <span>{formatPaymentMethod(order.paymentMethod)}</span>
+x                                    <span>{formatPaymentMethod(order.paymentMethod)}</span>
                                 </div>
                                 <div className="flex items-center gap-2 text-sm">
-                                    <span className="text-muted-foreground">Thanh toan:</span>
+                                    <span className="text-muted-foreground">Thanh toán:</span>
                                     <PaymentStatusBadge status={order.paymentStatus} />
                                 </div>
                             </div>
@@ -113,7 +113,7 @@ export function OrderDetailDialog({
 
                         {/* Products */}
                         <div className="rounded-lg border p-4">
-                            <h3 className="mb-3 font-semibold">San pham ({order.items.length})</h3>
+                            <h3 className="mb-3 font-semibold">Sản phẩm ({order.items.length})</h3>
                             <div className="space-y-3">
                                 {order.items.map((item, index) => (
                                     <div key={item.id || index} className="flex gap-3">
@@ -144,7 +144,7 @@ export function OrderDetailDialog({
 
                         {/* Summary */}
                         <div className="rounded-lg border p-4">
-                            <h3 className="mb-3 font-semibold">Tong ket</h3>
+                            <h3 className="mb-3 font-semibold">Tổng ket</h3>
                             <div className="space-y-2">
                                 <div className="flex justify-between text-sm">
                                     <span className="text-muted-foreground">Tam tinh</span>
@@ -159,12 +159,12 @@ export function OrderDetailDialog({
                                     </div>
                                 )}
                                 <div className="flex justify-between text-sm">
-                                    <span className="text-muted-foreground">Phi van chuyen</span>
+                                    <span className="text-muted-foreground">Phi van chuyển</span>
                                     <span className="text-green-600">Mien phi</span>
                                 </div>
                                 <Separator />
                                 <div className="flex justify-between font-semibold">
-                                    <span>Tong cong</span>
+                                    <span>Tổng cong</span>
                                     <span className="text-lg">{formatPrice(order.finalAmount)}</span>
                                 </div>
                             </div>

@@ -21,11 +21,11 @@ import { ModeToggle } from "@/components/ui/ModeTogger"
 import { cn } from "@/lib/utils"
 
 const sidebarItems = [
-    { name: "Tong quan", href: "/admin", icon: LayoutDashboard },
-    { name: "San pham", href: "/admin/products", icon: Package },
-    { name: "Don hang", href: "/admin/orders", icon: ShoppingCart },
-    { name: "Khach hang", href: "/admin/customers", icon: Users },
-    { name: "Thong ke", href: "", icon: BarChart3 },
+    { name: "Tổng quan", href: "/admin", icon: LayoutDashboard },
+    { name: "Sản phẩm", href: "/admin/products", icon: Package },
+    { name: "Đơn hàng", href: "/admin/orders", icon: ShoppingCart },
+    { name: "Khách hàng", href: "/admin/customers", icon: Users },
+    { name: "Thông ke", href: "/admin/statistics", icon: BarChart3 },
 ]
 
 function Sidebar({ className }: { className?: string }) {
@@ -64,7 +64,7 @@ function Sidebar({ className }: { className?: string }) {
                 <Link href="/">
                     <Button variant="outline" className="w-full gap-2">
                         <LogOut className="h-4 w-4" />
-                        Tro ve cua hang
+                        Tro ve cửa hàng
                     </Button>
                 </Link>
             </div>

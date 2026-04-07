@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { productApi } from "@/apis/productApi";
 import { Button } from "@/components/ui/button";
+import { formatUsdToVnd } from "@/utils/format";
 import ProductImageGallery from "./ProductImageGallery";
 
 interface ProductDetailPageProps {
@@ -19,7 +20,7 @@ export async function generateMetadata({ params }: ProductDetailPageProps): Prom
 
   try {
     const product = await getProductById(id);
-    const description = product.description?.trim() || `Chi tiet san pham ${product.title}`;
+    const description = product.description?.trim() || `Chi tiet sản phẩm ${product.title}`;
 
     return {
       title: `${product.title} | Technology Project`,
@@ -34,8 +35,8 @@ export async function generateMetadata({ params }: ProductDetailPageProps): Prom
     };
   } catch {
     return {
-      title: "Khong tim thay san pham | Technology Project",
-      description: "Khong the tai thong tin san pham.",
+      title: "Không tim thay sản phẩm | Technology Project",
+      description: "Không thẻ tai thong tin sản phẩm.",
     };
   }
 }
@@ -73,7 +74,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
               <span>Còn lại {product.stock} sản phẩm</span>
             </div>
 
-            <p className="mt-6 text-2xl font-bold text-blue-600">{product.price.toLocaleString("vi-VN")} $</p>
+            <p className="mt-6 text-2xl font-bold text-blue-600">{formatUsdToVnd(product.price)}</p>
 
             <Button
               type="button"

@@ -22,27 +22,27 @@ interface OrderStatusBadgeProps {
 export function OrderStatusBadge({ status }: OrderStatusBadgeProps) {
     const config: Record<OrderStatus, { label: string; className: string; icon: typeof Clock }> = {
         pending: {
-            label: "Cho xu ly",
+            label: "Chờ xử lý",
             className: "bg-yellow-500/10 text-yellow-600 border-yellow-200",
             icon: Clock,
         },
         processing: {
-            label: "Dang xu ly",
+            label: "Đang xử lý",
             className: "bg-blue-500/10 text-blue-600 border-blue-200",
             icon: Settings,
         },
         shipping: {
-            label: "Dang giao",
+            label: "Đang giao",
             className: "bg-purple-500/10 text-purple-600 border-purple-200",
             icon: Truck,
         },
         completed: {
-            label: "Hoan thanh",
+            label: "Hoàn thành",
             className: "bg-green-500/10 text-green-600 border-green-200",
             icon: CheckCircle,
         },
         cancelled: {
-            label: "Da huy",
+            label: "Đã hủy",
             className: "bg-red-500/10 text-red-600 border-red-200",
             icon: XCircle,
         },

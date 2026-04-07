@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { formatPrice } from "@/utils/format";
 
 export type SortOption = "relevance" | "price-asc" | "price-desc" | "rating-asc" | "rating-desc";
 
@@ -93,7 +94,7 @@ export default function ProductFilters({
                 className="mt-1"
               />
             </div>
-            <p className="text-xs text-gray-500">Tối đa: ${maxPrice.toFixed(2)}</p>
+            <p className="text-xs text-gray-500">Tối đa: {formatPrice(maxPrice)}</p>
           </div>
         </div>
 

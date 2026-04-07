@@ -7,7 +7,7 @@ import { type Order, type OrderFilters, type OrderStatus } from "@/apis/orderApi
 import { fetchOrders, getOrderStats, updateOrderStatus } from "../../../../../mock/order"
 import { OrderTable } from "@/components/order/OrderTable"
 import { OrderFiltersComponent } from "@/components/order/OrderFillters"
-import { OrderPagination } from "@/components/order/OrderPagination"
+import AppPagination from "@/components/shared/AppPagination"
 import { OrderStatsCards } from "@/components/order/OrderStatsCards"
 import { OrderDetailDialog } from "@/components/order/Dialog/DialogViewDetails"
 import { toast } from "sonner"
@@ -32,7 +32,7 @@ export default function Order() {
                 const data = await fetchOrders()
                 setOrders(data)
             } catch (error) {
-                toast.error("Khong the tai danh sach don hang")
+                toast.error("Không thẻ tai danh sách đơn hàng")
             } finally {
                 setLoading(false)
             }
@@ -118,16 +118,16 @@ export default function Order() {
             )
 
             const statusLabels: Record<OrderStatus, string> = {
-                pending: "Cho xu ly",
-                processing: "Dang xu ly",
-                shipping: "Dang giao",
-                completed: "Hoan thanh",
-                cancelled: "Da huy",
+                pending: "Chờ xử lý",
+                processing: "Đang xử lý",
+                shipping: "Đang giao",
+                completed: "Hoàn thành",
+                cancelled: "Đã hủy",
             }
 
-            toast.success(`Don hang #${orderId} da chuyen sang "${statusLabels[status]}"`)
+            toast.success(`Đơn hàng #${orderId} da chuyển sang "${statusLabels[status]}"`)
         } catch (error) {
-            toast.error("Khong the cap nhat trang thai don hang")
+            toast.error("Không thẻ cập nhật trạng thái đơn hàng")
         }
     }
 
@@ -152,9 +152,9 @@ export default function Order() {
         <div className="p-6 lg:p-8 space-y-6">
             {/* Header */}
             <div>
-                <h1 className="font-serif text-3xl font-bold">Quan ly don hang</h1>
+                <h1 className="font-serif text-3xl font-bold">Quản lý đơn hàng</h1>
                 <p className="text-muted-foreground">
-                    Theo doi va xu ly tat ca don hang cua khach hang
+                    Theo dõi va xu ly tat ca đơn hàng cua khách hàng
                 </p>
             </div>
 
@@ -164,9 +164,9 @@ export default function Order() {
             {/* Orders Table Card */}
             <Card>
                 <CardHeader>
-                    <CardTitle>Don hang</CardTitle>
+                    <CardTitle>Đơn hàng</CardTitle>
                     <CardDescription>
-                        Danh sach don hang va trang thai xu ly
+                        Danh sách đơn hàng va trạng thái xu ly
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -186,12 +186,11 @@ export default function Order() {
 
                     {/* Pagination */}
                     {filteredOrders.length > 0 && (
-                        <OrderPagination
+                        <AppPagination
                             currentPage={currentPage}
                             totalPages={totalPages}
-                            totalItems={filteredOrders.length}
-                            itemsPerPage={ITEMS_PER_PAGE}
-                            onPageChange={setCurrentPage}
+                            onPrevious={() => setCurrentPage((page) => Math.max(1, page - 1))}
+                            onNext={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
                         />
                     )}
                 </CardContent>

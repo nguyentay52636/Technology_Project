@@ -179,7 +179,7 @@ export function LoginForm({
                   </FieldDescription>
                 ) : null}
                 <FieldDescription className="text-center pt-4">
-                  Chưa có tài khoản? <Link href="/signup" className="underline font-medium hover:text-primary">Đăng ký ngay</Link>
+                  Chưa có tài khoản? <Link href="/signup" className="underline font-medium hover:text-primary">Đăng ký ngày</Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>

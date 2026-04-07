@@ -7,7 +7,7 @@ import { Pencil, Plus, Search, Trash2, Star } from "lucide-react"
 
 import { productApi, type Product, type ProductCreateInput, type ProductUpdateInput } from "@/apis/productApi"
 import ProductFilters, { type SortOption } from "@/components/products/ProductFilters"
-import ProductPagination from "@/components/products/ProductPagination"
+import AppPagination from "@/components/shared/AppPagination"
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -26,6 +26,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Skeleton } from "@/components/ui/skeleton"
+import { convertUsdToVnd, formatUsdToVnd } from "@/utils/format"
 
 const emptyForm = {
     title: "",
@@ -136,7 +137,7 @@ export default function AdminProductsPage() {
     const [form, setForm] = useState<ProductFormState>(emptyForm)
     const [selectedBrands, setSelectedBrands] = useState<string[]>([])
     const [selectedCategories, setSelectedCategories] = useState<string[]>([])
-    const [priceRange, setPriceRange] = useState({ min: 0, max: 10000 })
+    const [priceRange, setPriceRange] = useState({ min: 0, max: 1_000_000_000 })
     const [sortBy, setSortBy] = useState<SortOption>("relevance")
     const [showFilters, setShowFilters] = useState(true)
 
@@ -174,7 +175,7 @@ export default function AdminProductsPage() {
 
     const brands = useMemo(() => [...new Set(products.map(p => p.brand).filter(Boolean))].sort(), [products])
     const categories = useMemo(() => [...new Set(products.map(p => p.category).filter(Boolean))].sort(), [products])
-    const maxPrice = useMemo(() => Math.max(...products.map(p => p.price), 10000), [products])
+    const maxPrice = useMemo(() => Math.max(...products.map(p => convertUsdToVnd(p.price)), 10000), [products])
 
     const filteredAndSortedProducts = useMemo(() => {
         let filtered = products.filter(product => {
@@ -188,7 +189,8 @@ export default function AdminProductsPage() {
             const matchesSearch = title.includes(searchLower) || brand.includes(searchLower) || category.includes(searchLower) || sku.includes(searchLower) || description.includes(searchLower)
             const matchesBrand = selectedBrands.length === 0 || (product.brand && selectedBrands.includes(product.brand))
             const matchesCategory = selectedCategories.length === 0 || (product.category && selectedCategories.includes(product.category))
-            const matchesPrice = product.price >= priceRange.min && product.price <= priceRange.max
+            const priceInVnd = convertUsdToVnd(product.price)
+            const matchesPrice = priceInVnd >= priceRange.min && priceInVnd <= priceRange.max
 
             return matchesSearch && matchesBrand && matchesCategory && matchesPrice
         })
@@ -340,7 +342,7 @@ export default function AdminProductsPage() {
                         </div>
                         <div className="rounded-xl border bg-background p-4">
                             <p className="text-xs uppercase tracking-wide text-muted-foreground">Giá trung bình</p>
-                            <p className="mt-2 text-2xl font-semibold">{averagePrice.toLocaleString("vi-VN")}</p>
+                            <p className="mt-2 text-2xl font-semibold">{formatUsdToVnd(averagePrice)}</p>
                         </div>
                     </div>
                 </div>
@@ -462,7 +464,7 @@ export default function AdminProductsPage() {
                                         </TableCell>
                                         <TableCell>{product.category}</TableCell>
                                         <TableCell>{product.brand || "-"}</TableCell>
-                                        <TableCell>{product.price.toLocaleString("vi-VN")}</TableCell>
+                                        <TableCell>{formatUsdToVnd(product.price)}</TableCell>
                                         <TableCell>{product.stock}</TableCell>
                                         <TableCell>
                                             <div className="flex items-center gap-1">
@@ -490,7 +492,7 @@ export default function AdminProductsPage() {
                         </div>
 
                         {filteredAndSortedProducts.length > 0 ? (
-                            <ProductPagination
+                            <AppPagination
                                 currentPage={safeCurrentPage}
                                 totalPages={totalPages}
                                 onPrevious={() => setCurrentPage((page) => Math.max(1, page - 1))}

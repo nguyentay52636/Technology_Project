@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import type { Product } from '@/apis/productApi';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/lib/cart-context';
+import { formatUsdToVnd } from '@/utils/format';
 import { toast } from 'sonner';
 
 // Định nghĩa kiểu dữ liệu cho Props
@@ -64,7 +65,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
       <div className="mt-3">
         <p className="text-blue-600 font-bold text-lg">
-          {product.price.toLocaleString('vi-VN')} $
+          {formatUsdToVnd(product.price)}
         </p>
         {product.brand?.trim() && (
           <span className="text-xs text-gray-400 italic">Thương hiệu: {product.brand}</span>

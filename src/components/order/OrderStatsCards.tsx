@@ -25,25 +25,25 @@ interface OrderStatsCardsProps {
 export function OrderStatsCards({ stats }: OrderStatsCardsProps) {
     const cards = [
         {
-            title: "Tong don hang",
+            title: "Tổng đơn hàng",
             value: stats.total,
             icon: ShoppingCart,
             color: "bg-blue-500/10 text-blue-600",
         },
         {
-            title: "Cho xu ly",
+            title: "Chờ xử lý",
             value: stats.pending,
             icon: Clock,
             color: "bg-yellow-500/10 text-yellow-600",
         },
         {
-            title: "Dang giao",
+            title: "Đang giao",
             value: stats.shipping,
             icon: Truck,
             color: "bg-purple-500/10 text-purple-600",
         },
         {
-            title: "Hoan thanh",
+            title: "Hoàn thành",
             value: stats.completed,
             icon: CheckCircle,
             color: "bg-green-500/10 text-green-600",

@@ -12,17 +12,10 @@ import {
     SheetTitle,
 } from "@/components/ui/sheet"
 import { useCart } from "@/lib/cart-context"
+import { formatUsdToVnd } from "@/utils/format"
 
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
-
-
-function formatPrice(price: number) {
-    return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-    }).format(price)
-}
 
 export function CartSheet() {
     const router = useRouter()
@@ -46,7 +39,7 @@ export function CartSheet() {
                                     <ShoppingBag />
                                 </EmptyMedia>
                                 <EmptyTitle>Giỏ hàng trống</EmptyTitle>
-                                <EmptyDescription>Chưa có sản phẩm nào trong giỏ hàng</EmptyDescription>
+                                <EmptyDescription>Chưa có sản phẩm nào  trong giỏ hàng</EmptyDescription>
                             </EmptyHeader>
                         </Empty>
                         <Button className="mt-4" onClick={() => setIsCartOpen(false)}>
@@ -106,7 +99,7 @@ export function CartSheet() {
                                                     </Button>
                                                 </div>
                                                 <p className="text-sm font-semibold">
-                                                    {formatPrice(item.price * item.quantity)}
+                                                    {formatUsdToVnd(item.price * item.quantity)}
                                                 </p>
                                             </div>
                                         </div>
@@ -121,7 +114,7 @@ export function CartSheet() {
                             <div className="space-y-2">
                                 <div className="flex items-center justify-between text-sm">
                                     <span className="text-muted-foreground">Tạm tính</span>
-                                    <span>{formatPrice(total)}</span>
+                                    <span>{formatUsdToVnd(total)}</span>
                                 </div>
                                 <div className="flex items-center justify-between text-sm">
                                     <span className="text-muted-foreground">Phí vận chuyển</span>
@@ -133,7 +126,7 @@ export function CartSheet() {
 
                             <div className="flex items-center justify-between font-semibold">
                                 <span>Tổng cộng</span>
-                                <span className="text-lg">{formatPrice(total)}</span>
+                                <span className="text-lg">{formatUsdToVnd(total)}</span>
                             </div>
 
                             <div className="flex flex-col gap-2">
@@ -145,7 +138,7 @@ export function CartSheet() {
                                         router.push("/checkout")
                                     }}
                                 >
-                                    Thanh toán ({formatPrice(total)})
+                                    Thanh toán ({formatUsdToVnd(total)})
                                 </Button>
                                 <Button variant="outline" size="lg" className="w-full gap-2 text-muted-foreground hover:text-destructive" onClick={clearCart}>
                                     <Trash2 className="h-4 w-4" />

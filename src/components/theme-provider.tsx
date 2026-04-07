@@ -6,7 +6,7 @@ import { ThemeProvider as NextThemesProvider } from "next-themes"
 function shouldIgnoreDevWarning(message: string) {
     return (
         message.includes("Encountered a script tag while rendering React component") ||
-        (message.includes("A tree hydrated but some attributes of the server rendered HTML didn't match") &&
+        (message.includes("A tree hydrated but some attributes of thẻ server rendered HTML didn't match") &&
             (message.includes("monica-id") || message.includes("monica-version")))
     )
 }
