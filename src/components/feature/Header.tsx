@@ -20,12 +20,13 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useCart } from "@/lib/cart-context"
 import { Badge } from "../ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
+import { NavUser } from "../nav-user"
 
 type StoredUser = {
   firstName?: string
   lastName?: string
   username?: string
+  email?: string
   image?: string
   role?: string
 }
@@ -64,9 +65,7 @@ export function Header() {
   const userRole = currentUser?.role?.toLowerCase() ?? null
   const isAdminOrModerator = userRole === "admin" || userRole === "moderator"
   const isLoggedIn = Boolean(currentUser)
-  const displayLastName = currentUser?.lastName || currentUser?.username || "Tài khoản"
-  const displayInitial =
-    currentUser?.lastName?.charAt(0) || currentUser?.firstName?.charAt(0) || "U"
+  const displayName = currentUser?.lastName || currentUser?.username || "Tài khoản"
 
   useEffect(() => {
     const syncAuthUser = () => {
@@ -161,47 +160,35 @@ export function Header() {
           )}
 
           {/* User */}
-          <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size={isLoggedIn ? "default" : "icon"}
-                className={isLoggedIn ? "h-9 px-2" : undefined}
-              >
-                {isLoggedIn ? (
-                  <>
-                    <Avatar size="sm">
-                      <AvatarImage src={currentUser?.image} alt={displayLastName} />
-                      <AvatarFallback>{displayInitial.toUpperCase()}</AvatarFallback>
-                    </Avatar>
-                    <span className="max-w-[90px] truncate text-sm font-medium">{displayLastName}</span>
-                  </>
-                ) : (
+          {isLoggedIn ? (
+            <NavUser
+              variant="header"
+              user={{
+                name: displayName,
+                email: currentUser?.email,
+                avatar: currentUser?.image || "",
+              }}
+              isAdminOrModerator={isAdminOrModerator}
+              onLogout={handleLogout}
+            />
+          ) : (
+            <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
                   <User className="h-5 w-5" />
-                )}
-                <span className="sr-only">Tài khoản</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {!isLoggedIn && (
-                <>
-                  <DropdownMenuItem asChild onClick={() => setDropdownOpen(false)}>
-                    <Link href="/login">Đăng Nhập</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild onClick={() => setDropdownOpen(false)}>
-                    <Link href="/signup">Đăng Ký</Link>
-                  </DropdownMenuItem>
-                </>
-              )}
-              {!isAdminOrModerator && <DropdownMenuItem>Đơn Hàng</DropdownMenuItem>}
-              {isAdminOrModerator && (
+                  <span className="sr-only">Tài khoản</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
                 <DropdownMenuItem asChild onClick={() => setDropdownOpen(false)}>
-                  <Link href="/admin">Quản Trị</Link>
+                  <Link href="/login">Đăng nhập</Link>
                 </DropdownMenuItem>
-              )}
-              {isLoggedIn && <DropdownMenuItem onClick={handleLogout}>Đăng Xuất</DropdownMenuItem>}
-            </DropdownMenuContent>
-          </DropdownMenu>
+                <DropdownMenuItem asChild onClick={() => setDropdownOpen(false)}>
+                  <Link href="/signup">Đăng ký</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
 
           {/* Cart */}
           <Button

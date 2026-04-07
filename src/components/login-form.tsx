@@ -5,6 +5,7 @@ import { FormEvent, useState } from "react"
 import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { authApi } from "@/apis/authApi"
+import { usersApi } from "@/apis/usersApi"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -43,15 +44,49 @@ export function LoginForm({
         expiresInMins: 30,
       })
 
-      const currentUser = await authApi.getCurrentAuthUser(loginResponse.accessToken)
-      const role = currentUser.role?.toLowerCase()
+      const authUser = await authApi.getCurrentAuthUser(loginResponse.accessToken)
+
+      let role: string | undefined
+      try {
+        const fullUser = await usersApi.getUserById(authUser.id ?? loginResponse.id)
+        role = fullUser.role
+
+        localStorage.setItem(
+          "currentUser",
+          JSON.stringify({
+            id: fullUser.id,
+            username: fullUser.username,
+            email: fullUser.email,
+            firstName: fullUser.firstName,
+            lastName: fullUser.lastName,
+            image: fullUser.image,
+            role: fullUser.role,
+          })
+        )
+      } catch {
+        role = authUser.role
+
+        localStorage.setItem(
+          "currentUser",
+          JSON.stringify({
+            id: authUser.id ?? loginResponse.id,
+            username: authUser.username ?? loginResponse.username,
+            email: authUser.email ?? loginResponse.email,
+            firstName: authUser.firstName ?? loginResponse.firstName,
+            lastName: authUser.lastName ?? loginResponse.lastName,
+            image: authUser.image ?? loginResponse.image,
+            role: authUser.role,
+          })
+        )
+      }
+
+      const normalizedRole = role?.toLowerCase()
 
       localStorage.setItem("accessToken", loginResponse.accessToken)
       localStorage.setItem("refreshToken", loginResponse.refreshToken)
-      localStorage.setItem("currentUser", JSON.stringify(currentUser))
       window.dispatchEvent(new Event("auth-changed"))
 
-      if (role === "admin" || role === "moderator") {
+      if (normalizedRole === "admin" || normalizedRole === "moderator") {
         router.push("/admin")
         return
       }
