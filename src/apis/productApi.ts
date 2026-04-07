@@ -32,6 +32,7 @@ export interface Product {
     thumbnail: string;
 }
 
+
 export interface ApiResponse {
     products: Product[];
     total: number;
