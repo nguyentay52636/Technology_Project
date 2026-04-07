@@ -98,6 +98,20 @@ function cartReducer(state: CartState, action: CartAction): CartState {
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
 
+const fallbackCartContext: CartContextType = {
+    items: [],
+    addItem: () => {},
+    removeItem: () => {},
+    updateQuantity: () => {},
+    clearCart: () => {},
+    total: 0,
+    itemCount: 0,
+    isCartOpen: false,
+    setIsCartOpen: () => {},
+}
+
+let warnedMissingProvider = false
+
 export function CartProvider({ children }: { children: ReactNode }) {
     const [state, dispatch] = useReducer(cartReducer, initialState)
 
@@ -198,7 +212,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
 export function useCart() {
     const context = useContext(CartContext)
     if (context === undefined) {
-        throw new Error("useCart must be used within a CartProvider")
+        if (process.env.NODE_ENV !== "production" && !warnedMissingProvider) {
+            warnedMissingProvider = true
+            console.warn("useCart is being used outside CartProvider. Falling back to empty cart context.")
+        }
+        return fallbackCartContext
     }
     return context
 }

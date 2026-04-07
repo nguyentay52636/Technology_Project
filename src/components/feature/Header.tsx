@@ -140,25 +140,7 @@ export function Header() {
         {/* Actions */}
         <div className="flex items-center gap-2">
           {/* Search */}
-          {searchOpen ? (
-            <div className="flex items-center gap-2">
-              <Input
-                type="search"
-                placeholder="Tìm kiếm..."
-                className="h-9 w-[200px] md:w-[300px]"
-                autoFocus
-              />
-              <Button variant="ghost" size="icon" onClick={() => setSearchOpen(false)}>
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-          ) : (
-            <Button variant="ghost" size="icon" onClick={() => setSearchOpen(true)}>
-              <Search className="h-5 w-5" />
-              <span className="sr-only">Tìm kiếm</span>
-            </Button>
-          )}
-
+          
           {/* User */}
           {isLoggedIn ? (
             <NavUser
