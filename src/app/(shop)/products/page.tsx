@@ -1,6 +1,6 @@
 // app/products/page.tsx
 import { productApi } from "@/apis/productApi";
-import ProductsClient from "@/components/Products/ProductsClient";
+import ProductsClient from "@/components/products/ProductsClient";
 
 export default async function Page() {
   const products = await productApi.getProducts();

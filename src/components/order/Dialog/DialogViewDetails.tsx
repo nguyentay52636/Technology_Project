@@ -12,7 +12,7 @@ import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { type Order, type OrderStatus } from "@/apis/orderApi"
 import { OrderStatusBadge, PaymentStatusBadge } from "../OrderStatusBadge"
-import { formatPrice, formatDateTime, formatPaymentMethod } from "../../../../../../../utils/format"
+import { formatPrice, formatDateTime, formatPaymentMethod } from "@/utils/format"
 
 interface OrderDetailDialogProps {
     order: Order | null

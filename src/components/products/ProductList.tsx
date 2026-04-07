@@ -1,4 +1,4 @@
-import ProductCard from '../ProductCard';
+import ProductCard from './ProductCard';
 import type { Product } from '@/apis/productApi';
 
 interface ProductListProps {

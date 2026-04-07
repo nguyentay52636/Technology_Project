@@ -23,7 +23,7 @@ import { cn } from "@/lib/utils"
 const sidebarItems = [
     { name: "Tong quan", href: "/admin", icon: LayoutDashboard },
     { name: "San pham", href: "/admin/products", icon: Package },
-    { name: "Don hang", href: "", icon: ShoppingCart },
+    { name: "Don hang", href: "/admin/orders", icon: ShoppingCart },
     { name: "Khach hang", href: "/admin/customers", icon: Users },
     { name: "Thong ke", href: "", icon: BarChart3 },
 ]

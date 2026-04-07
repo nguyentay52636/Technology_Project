@@ -1,6 +1,7 @@
 "use client"
 
-import { createContext, useContext, useReducer, useCallback, ReactNode } from "react"
+import { createContext, useContext, useReducer, useCallback, ReactNode, useEffect } from "react"
+import { cartApi } from "@/apis/cartApi"
 
 export interface CartItem {
     id: string
@@ -33,6 +34,7 @@ type CartAction =
     | { type: "ADD_ITEM"; item: Omit<CartItem, "quantity"> }
     | { type: "REMOVE_ITEM"; id: string }
     | { type: "UPDATE_QUANTITY"; id: string; quantity: number }
+    | { type: "SET_ITEMS"; items: CartItem[] }
     | { type: "CLEAR_CART" }
     | { type: "SET_IS_CART_OPEN"; open: boolean }
 
@@ -74,6 +76,11 @@ function cartReducer(state: CartState, action: CartAction): CartState {
                               item.id === action.id ? { ...item, quantity: action.quantity } : item
                           ),
             }
+        case "SET_ITEMS":
+            return {
+                ...state,
+                items: action.items,
+            }
         case "CLEAR_CART":
             return {
                 ...state,
@@ -93,6 +100,57 @@ const CartContext = createContext<CartContextType | undefined>(undefined)
 
 export function CartProvider({ children }: { children: ReactNode }) {
     const [state, dispatch] = useReducer(cartReducer, initialState)
+
+    const syncUserCart = useCallback(async () => {
+        if (typeof window === "undefined") {
+            return
+        }
+
+        const rawUser = localStorage.getItem("currentUser")
+        if (!rawUser) {
+            dispatch({ type: "CLEAR_CART" })
+            return
+        }
+
+        try {
+            const parsedUser = JSON.parse(rawUser) as { id?: number }
+            if (!parsedUser.id) {
+                dispatch({ type: "CLEAR_CART" })
+                return
+            }
+
+            const products = await cartApi.getMergedProductsByUserId(parsedUser.id)
+            const mappedItems: CartItem[] = products.map((product) => ({
+                id: String(product.id),
+                name: product.title,
+                price: product.price,
+                image: product.thumbnail,
+                category: "Khac",
+                quantity: product.quantity,
+            }))
+
+            dispatch({ type: "SET_ITEMS", items: mappedItems })
+        } catch {
+            // Keep cart stable when remote cart fetch fails.
+            dispatch({ type: "CLEAR_CART" })
+        }
+    }, [])
+
+    useEffect(() => {
+        syncUserCart()
+
+        const handleAuthChanged = () => {
+            void syncUserCart()
+        }
+
+        window.addEventListener("auth-changed", handleAuthChanged)
+        window.addEventListener("storage", handleAuthChanged)
+
+        return () => {
+            window.removeEventListener("auth-changed", handleAuthChanged)
+            window.removeEventListener("storage", handleAuthChanged)
+        }
+    }, [syncUserCart])
 
     const addItem = useCallback((item: Omit<CartItem, "quantity">) => {
         dispatch({ type: "ADD_ITEM", item })

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 interface ProductImageGalleryProps {
   title: string;
@@ -40,9 +41,10 @@ export default function ProductImageGallery({
             const isActive = image === selectedImage;
 
             return (
-              <button
+              <Button
                 key={`${image}-${index}`}
                 type="button"
+                variant="ghost"
                 onClick={() => setSelectedImage(image)}
                 className={`relative h-20 overflow-hidden rounded-lg border bg-slate-50 transition ${
                   isActive ? "border-blue-500 ring-2 ring-blue-200" : "border-slate-200 hover:border-slate-400"
@@ -56,7 +58,7 @@ export default function ProductImageGallery({
                   className="object-cover"
                   sizes="120px"
                 />
-              </button>
+              </Button>
             );
           })}
         </div>

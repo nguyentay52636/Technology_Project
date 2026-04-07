@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useMemo } from "react";
 import type { Product } from "@/apis/productApi";
-import ProductCard from "@/components/ProductCard";
+import ProductCard from "@/components/products/ProductCard";
 import { Button } from "@/components/ui/button";
 
 interface FeaturedProductsSectionProps {

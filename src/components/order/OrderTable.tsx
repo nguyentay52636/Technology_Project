@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { type Order, type OrderStatus } from "@/apis/orderApi"
 import { OrderStatusBadge, PaymentStatusBadge } from "./OrderStatusBadge"
-import { formatPrice, formatDate } from "../../../../../../utils/format"
+import { formatPrice, formatDate } from "@/utils/format"
 
 interface OrderTableProps {
     orders: Order[]

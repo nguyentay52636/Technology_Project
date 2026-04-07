@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 const contactItems = [
   {
@@ -42,36 +45,30 @@ export default function ContactPage() {
           <h2 className="text-2xl font-bold">Gửi tin nhắn</h2>
           <form className="mt-6 space-y-4">
             <div className="space-y-2">
-              <label htmlFor="name" className="text-sm font-medium text-foreground">
-                Họ và tên
-              </label>
-              <input
+              <Label htmlFor="name">Họ và tên</Label>
+              <Input
                 id="name"
                 type="text"
                 placeholder="Nguyễn Văn A"
-                className="h-11 w-full rounded-xl border border-input bg-background px-3 text-sm outline-none transition focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+                className="h-11 rounded-xl px-3"
               />
             </div>
             <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium text-foreground">
-                Email
-              </label>
-              <input
+              <Label htmlFor="email">Email</Label>
+              <Input
                 id="email"
                 type="email"
                 placeholder="name@example.com"
-                className="h-11 w-full rounded-xl border border-input bg-background px-3 text-sm outline-none transition focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+                className="h-11 rounded-xl px-3"
               />
             </div>
             <div className="space-y-2">
-              <label htmlFor="message" className="text-sm font-medium text-foreground">
-                Nội dung
-              </label>
-              <textarea
+              <Label htmlFor="message">Nội dung</Label>
+              <Textarea
                 id="message"
                 rows={5}
                 placeholder="Tôi cần tư vấn thêm về sản phẩm..."
-                className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm outline-none transition focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+                className="rounded-xl px-3 py-2"
               />
             </div>
             <Button type="button" size="lg" className="w-full sm:w-auto">

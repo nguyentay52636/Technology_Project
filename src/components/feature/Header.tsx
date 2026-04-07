@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useCart } from "@/lib/cart-context"
 import { Badge } from "../ui/badge"
-import { NavUser } from "../nav-user"
+import { NavUser } from "../user/nav-user"
 
 type StoredUser = {
   firstName?: string

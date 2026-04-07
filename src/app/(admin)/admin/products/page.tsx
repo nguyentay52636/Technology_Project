@@ -6,8 +6,8 @@ import { toast } from "sonner"
 import { Pencil, Plus, Search, Trash2, Star } from "lucide-react"
 
 import { productApi, type Product, type ProductCreateInput, type ProductUpdateInput } from "@/apis/productApi"
-import ProductFilters, { type SortOption } from "@/components/Products/ProductFilters"
-import ProductPagination from "@/components/Products/ProductPagination"
+import ProductFilters, { type SortOption } from "@/components/products/ProductFilters"
+import ProductPagination from "@/components/products/ProductPagination"
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -16,6 +16,7 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import {
     Table,
     TableBody,
@@ -538,10 +539,10 @@ export default function AdminProductsPage() {
                         </div>
 
                         <Field label="Mô tả" required>
-                            <textarea
+                            <Textarea
                                 value={form.description}
                                 onChange={(event) => setForm({ ...form, description: event.target.value })}
-                                className="min-h-28 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+                                className="min-h-28 px-3 py-2"
                             />
                         </Field>
 

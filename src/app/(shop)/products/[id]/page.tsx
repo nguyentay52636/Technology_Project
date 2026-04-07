@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { productApi } from "@/apis/productApi";
+import { Button } from "@/components/ui/button";
 import ProductImageGallery from "./ProductImageGallery";
 
 interface ProductDetailPageProps {
@@ -74,12 +75,13 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
 
             <p className="mt-6 text-2xl font-bold text-blue-600">{product.price.toLocaleString("vi-VN")} $</p>
 
-            <button
+            <Button
               type="button"
+              variant="outline"
               className="mt-4 inline-flex w-full items-center justify-center rounded-xl border border-red-200 bg-red-50 px-5 py-3 text-sm font-semibold text-red-600 transition hover:bg-red-600 hover:text-white md:w-fit"
             >
               Thêm vào giỏ hàng
-            </button>
+            </Button>
 
             {product.brand?.trim() && (
               <p className="mt-2 text-sm italic text-slate-500">Thương hiệu: {product.brand}</p>

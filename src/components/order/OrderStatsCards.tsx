@@ -8,7 +8,7 @@ import {
     DollarSign
 } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
-import { formatPrice } from "../../../../../../utils/format"
+import { formatPrice } from "@/utils/format"
 
 interface OrderStatsCardsProps {
     stats: {

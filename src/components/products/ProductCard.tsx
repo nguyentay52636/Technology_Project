@@ -2,6 +2,7 @@
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import type { Product } from '@/apis/productApi';
+import { Button } from '@/components/ui/button';
 import { useCart } from '@/lib/cart-context';
 import { toast } from 'sonner';
 
@@ -70,7 +71,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         )}
       </div>
       
-      <button
+      <Button
         onClick={(event) => {
           event.stopPropagation();
           const existingItem = items.find((item) => item.id === String(product.id));
@@ -95,7 +96,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         className="mt-4 bg-red-50 text-red-500 border border-red-200 px-4 py-2 rounded-lg hover:bg-red-500 hover:text-white transition font-medium flex items-center justify-center gap-2"
       >
         <span>🛒</span> Thêm vào giỏ hàng
-      </button>
+      </Button>
     </div>
   );
 }

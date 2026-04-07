@@ -1,6 +1,7 @@
 "use client"
 
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 import { Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
@@ -11,7 +12,6 @@ import {
     SheetTitle,
 } from "@/components/ui/sheet"
 import { useCart } from "@/lib/cart-context"
-import { toast } from "sonner"
 
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
@@ -25,6 +25,7 @@ function formatPrice(price: number) {
 }
 
 export function CartSheet() {
+    const router = useRouter()
     const { items, removeItem, updateQuantity, total, itemCount, isCartOpen, setIsCartOpen, clearCart } = useCart()
 
     return (
@@ -136,7 +137,14 @@ export function CartSheet() {
                             </div>
 
                             <div className="flex flex-col gap-2">
-                                <Button size="lg" className="w-full" onClick={() => toast.info("Chức năng thanh toán đang được phát triển!")}>
+                                <Button
+                                    size="lg"
+                                    className="w-full"
+                                    onClick={() => {
+                                        setIsCartOpen(false)
+                                        router.push("/checkout")
+                                    }}
+                                >
                                     Thanh toán ({formatPrice(total)})
                                 </Button>
                                 <Button variant="outline" size="lg" className="w-full gap-2 text-muted-foreground hover:text-destructive" onClick={clearCart}>

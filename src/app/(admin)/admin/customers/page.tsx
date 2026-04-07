@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
-import ProductPagination from "@/components/Products/ProductPagination"
+import ProductPagination from "@/components/products/ProductPagination"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
 const ITEMS_PER_PAGE = 10
