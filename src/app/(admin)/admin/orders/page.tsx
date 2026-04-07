@@ -5,11 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Skeleton } from "@/components/ui/skeleton"
 import { type Order, type OrderFilters, type OrderStatus } from "@/apis/orderApi"
 import { fetchOrders, getOrderStats, updateOrderStatus } from "../../../../../mock/order"
-import { OrderTable } from "@/components/order/OrderTable"
-import { OrderFiltersComponent } from "@/components/order/OrderFillters"
+import { OrderTable } from "@/components/admin/components/Order/OrderTable"
+import { OrderFiltersComponent } from "@/components/admin/components/Order/OrderFillters"
 import AppPagination from "@/components/shared/AppPagination"
-import { OrderStatsCards } from "@/components/order/OrderStatsCards"
-import { OrderDetailDialog } from "@/components/order/Dialog/DialogViewDetails"
+import { OrderStatsCards } from "@/components/admin/components/Order/OrderStatsCards"
+import { OrderDetailDialog } from "@/components/admin/components/Order/Dialog/DialogViewDetails"
 import { toast } from "sonner"
 
 const ITEMS_PER_PAGE = 5

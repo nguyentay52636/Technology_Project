@@ -75,7 +75,7 @@ export function NavUser({
             </Link>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {!isAdminOrModerator && <DropdownMenuItem>Đơn hàng</DropdownMenuItem>}
+          {!isAdminOrModerator && <DropdownMenuItem><Link href="/orders">Đơn hàng</Link></DropdownMenuItem>}
           {isAdminOrModerator && (
             <DropdownMenuItem asChild>
               <Link href="/admin">Quản trị</Link>

@@ -1,6 +1,5 @@
 import { type Order, type OrderStatus, type PaymentStatus } from "@/apis/orderApi"
 
-// Mock data - in production, this would fetch from a real API
 const mockOrders: Order[] = [
   {
     id: 1001,
@@ -323,6 +322,11 @@ export function getOrderStats(orders: Order[]) {
     shipping: orders.filter((o) => o.status === "shipping").length,
     completed: orders.filter((o) => o.status === "completed").length,
     cancelled: orders.filter((o) => o.status === "cancelled").length,
+    // Payment stats
+    paymentPending: orders.filter((o) => o.paymentStatus === "pending").length,
+    paymentPaid: orders.filter((o) => o.paymentStatus === "paid").length,
+    paymentFailed: orders.filter((o) => o.paymentStatus === "failed").length,
+    paymentRefunded: orders.filter((o) => o.paymentStatus === "refunded").length,
     totalRevenue: orders
       .filter((o) => o.status === "completed")
       .reduce((sum, o) => sum + o.finalAmount, 0),

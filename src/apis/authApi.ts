@@ -48,7 +48,6 @@ const parseError = async (response: Response): Promise<string> => {
       return data.message
     }
   } catch {
-    // Fall back to generic HTTP message when response is not JSON.
   }
 
   return `HTTP Error: ${response.status}`
