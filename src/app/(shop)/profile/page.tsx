@@ -2,8 +2,13 @@
 
 import Link from "next/link"
 import { useEffect, useMemo, useState } from "react"
+import { toast } from "sonner"
 
-import { usersApi, type User as ApiUser } from "@/apis/usersApi"
+import {
+  usersApi,
+  type User as ApiUser,
+  type UserPutInput,
+} from "@/apis/usersApi"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -27,6 +32,24 @@ type StoredUser = {
   role?: string
 }
 
+type EditableFieldKey =
+  | "firstName"
+  | "lastName"
+  | "username"
+  | "email"
+  | "phone"
+  | "gender"
+  | "birthDate"
+  | "password"
+  | "image"
+  | "address"
+  | "city"
+  | "state"
+  | "postalCode"
+  | "country"
+
+type ProfileForm = Record<EditableFieldKey, string>
+
 const getStoredUser = (): StoredUser | null => {
   if (typeof window === "undefined") {
     return null
@@ -44,11 +67,31 @@ const getStoredUser = (): StoredUser | null => {
   }
 }
 
+const buildProfileForm = (profileUser: ApiUser | null, currentUser: StoredUser | null): ProfileForm => ({
+  firstName: profileUser?.firstName || currentUser?.firstName || "",
+  lastName: profileUser?.lastName || currentUser?.lastName || "",
+  username: profileUser?.username || currentUser?.username || "",
+  email: profileUser?.email || currentUser?.email || "",
+  phone: profileUser?.phone || "",
+  gender: profileUser?.gender || "",
+  birthDate: profileUser?.birthDate || "",
+  password: profileUser?.password || "",
+  image: profileUser?.image || currentUser?.image || "",
+  address: profileUser?.address?.address || "",
+  city: profileUser?.address?.city || "",
+  state: profileUser?.address?.state || "",
+  postalCode: profileUser?.address?.postalCode || "",
+  country: profileUser?.address?.country || "",
+})
+
 export default function ProfilePage() {
   const [currentUser, setCurrentUser] = useState<StoredUser | null>(null)
   const [profileUser, setProfileUser] = useState<ApiUser | null>(null)
   const [isLoadingProfile, setIsLoadingProfile] = useState(false)
   const [profileError, setProfileError] = useState<string | null>(null)
+  const [isEditing, setIsEditing] = useState(false)
+  const [isSavingPut, setIsSavingPut] = useState(false)
+  const [formValues, setFormValues] = useState<ProfileForm>(() => buildProfileForm(null, null))
 
   useEffect(() => {
     const syncAuthUser = () => {
@@ -88,26 +131,104 @@ export default function ProfilePage() {
     void loadProfile()
   }, [currentUser?.id])
 
+  useEffect(() => {
+    if (isEditing) {
+      return
+    }
+
+    setFormValues(buildProfileForm(profileUser, currentUser))
+  }, [profileUser, currentUser, isEditing])
+
   const isLoggedIn = Boolean(currentUser)
 
   const displayName = useMemo(() => {
-    const nameParts = [profileUser?.firstName, profileUser?.lastName].filter(Boolean)
+    const nameParts = [formValues.firstName, formValues.lastName].filter(Boolean)
     if (nameParts.length) {
       return nameParts.join(" ")
     }
 
-    return profileUser?.username || currentUser?.username || "Tài khoản"
-  }, [currentUser?.username, profileUser?.firstName, profileUser?.lastName, profileUser?.username])
+    return formValues.username || currentUser?.username || "Tài khoản"
+  }, [currentUser?.username, formValues.firstName, formValues.lastName, formValues.username])
 
   const displayInitial = useMemo(() => {
     return (
-      profileUser?.lastName?.charAt(0) ||
-      profileUser?.firstName?.charAt(0) ||
-      profileUser?.username?.charAt(0) ||
+      formValues.lastName.charAt(0) ||
+      formValues.firstName.charAt(0) ||
+      formValues.username.charAt(0) ||
       currentUser?.username?.charAt(0) ||
       "U"
     ).toUpperCase()
-  }, [currentUser?.username, profileUser?.firstName, profileUser?.lastName, profileUser?.username])
+  }, [currentUser?.username, formValues.firstName, formValues.lastName, formValues.username])
+
+  const setField = (field: EditableFieldKey, value: string) => {
+    setFormValues((prev) => ({ ...prev, [field]: value }))
+  }
+
+  const handleStartEdit = () => {
+    setFormValues(buildProfileForm(profileUser, currentUser))
+    setIsEditing(true)
+  }
+
+  const handleCancelEdit = () => {
+    setFormValues(buildProfileForm(profileUser, currentUser))
+    setIsEditing(false)
+  }
+
+  const mergeProfile = (updated: ApiUser) => {
+    setProfileUser((prev) => {
+      if (!prev) {
+        return updated
+      }
+
+      return {
+        ...prev,
+        ...updated,
+        address: {
+          ...prev.address,
+          ...updated.address,
+        },
+      }
+    })
+  }
+
+  const handleSavePut = async () => {
+    if (!currentUser?.id || !profileUser) {
+      toast.error("Không tìm thấy thông tin người dùng để cập nhật")
+      return
+    }
+
+    const payload: UserPutInput = {
+      firstName: formValues.firstName,
+      lastName: formValues.lastName,
+      email: formValues.email,
+      phone: formValues.phone,
+      username: formValues.username,
+      password: formValues.password,
+      birthDate: formValues.birthDate,
+      gender: formValues.gender,
+      image: formValues.image,
+      address: {
+        address: formValues.address,
+        city: formValues.city,
+        state: formValues.state,
+        postalCode: formValues.postalCode,
+        country: formValues.country,
+      },
+      role: profileUser.role || currentUser.role || "user",
+    }
+
+    try {
+      setIsSavingPut(true)
+      const updated = await usersApi.updateUser(currentUser.id, payload)
+      mergeProfile(updated)
+      setIsEditing(false)
+      toast.success("Đã sửa thành công!")
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Cập nhật PUT thất bại")
+    } finally {
+      setIsSavingPut(false)
+    }
+  }
 
   const handleLogout = () => {
     localStorage.removeItem("currentUser")
@@ -117,7 +238,26 @@ export default function ProfilePage() {
     setCurrentUser(null)
     setProfileUser(null)
     setProfileError(null)
+    setIsEditing(false)
   }
+
+  const renderEditableField = (
+    field: EditableFieldKey,
+    label: string,
+    options?: { type?: string }
+  ) => (
+    <div className="grid gap-2">
+      <Label>{label}</Label>
+      <Input
+        type={options?.type}
+        value={formValues[field]}
+        onChange={(event) => setField(field, event.target.value)}
+        readOnly={!isEditing || field === "username"}
+        disabled={!isEditing || field === "username"}
+        placeholder="Chưa có"
+      />
+    </div>
+  )
 
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-10 md:px-6">
@@ -151,13 +291,13 @@ export default function ProfilePage() {
           <CardHeader className="border-b">
             <div className="flex items-center gap-3">
               <Avatar size="lg">
-                <AvatarImage src={profileUser?.image || currentUser?.image} alt={displayName} />
+                <AvatarImage src={formValues.image || currentUser?.image} alt={displayName} />
                 <AvatarFallback>{displayInitial}</AvatarFallback>
               </Avatar>
               <div className="min-w-0">
                 <CardTitle className="truncate">{displayName}</CardTitle>
                 <CardDescription className="truncate">
-                  {profileUser?.email || currentUser?.email || "Chưa cập nhật email"}
+                  {formValues.email || currentUser?.email || "Chưa cập nhật email"}
                 </CardDescription>
               </div>
             </div>
@@ -170,74 +310,46 @@ export default function ProfilePage() {
             {profileError && (
               <p className="text-sm text-destructive">{profileError}</p>
             )}
-
-            <div className="grid gap-2">
-              <Label>ID</Label>
-              <Input value={profileUser?.id?.toString() || currentUser?.id?.toString() || ""} readOnly disabled placeholder="Chưa có" />
-            </div>
-            <div className="grid gap-2">
-              <Label>Họ</Label>
-              <Input value={profileUser?.lastName || currentUser?.lastName || ""} readOnly disabled placeholder="Chưa có" />
-            </div>
-            <div className="grid gap-2">
-              <Label>Tên</Label>
-              <Input value={profileUser?.firstName || currentUser?.firstName || ""} readOnly disabled placeholder="Chưa có" />
-            </div>
-            <div className="grid gap-2">
-              <Label>Tên đăng nhập</Label>
-              <Input value={profileUser?.username || currentUser?.username || ""} readOnly disabled placeholder="Chưa có" />
-            </div>
-            <div className="grid gap-2">
-              <Label>Email</Label>
-              <Input value={profileUser?.email || currentUser?.email || ""} readOnly disabled placeholder="Chưa có" />
-            </div>
-            <div className="grid gap-2">
-              <Label>Số điện thoại</Label>
-              <Input value={profileUser?.phone || ""} readOnly disabled placeholder="Chưa có" />
-            </div>
-            <div className="grid gap-2">
-              <Label>Giới tính</Label>
-              <Input value={profileUser?.gender || ""} readOnly disabled placeholder="Chưa có" />
-            </div>
-            <div className="grid gap-2">
-              <Label>Ngày sinh</Label>
-              <Input value={profileUser?.birthDate || ""} readOnly disabled placeholder="Chưa có" />
-            </div>
-            <div className="grid gap-2">
-              <Label>Mật khẩu</Label>
-              <Input type="password" value={profileUser?.password || ""} readOnly disabled placeholder="Chưa có" />
-            </div>
-            <div className="grid gap-2">
-              <Label>Ảnh đại diện (URL)</Label>
-              <Input value={profileUser?.image || currentUser?.image || ""} readOnly disabled placeholder="Chưa có" />
-            </div>
-
-            <div className="grid gap-2">
-              <Label>Địa chỉ</Label>
-              <Input value={profileUser?.address?.address || ""} readOnly disabled placeholder="Chưa có" />
-            </div>
-            <div className="grid gap-2">
-              <Label>Thành phố</Label>
-              <Input value={profileUser?.address?.city || ""} readOnly disabled placeholder="Chưa có" />
-            </div>
-            <div className="grid gap-2">
-              <Label>Tỉnh/Bang</Label>
-              <Input value={profileUser?.address?.state || ""} readOnly disabled placeholder="Chưa có" />
-            </div>
-            <div className="grid gap-2">
-              <Label>Mã bưu chính</Label>
-              <Input value={profileUser?.address?.postalCode || ""} readOnly disabled placeholder="Chưa có" />
-            </div>
-            <div className="grid gap-2">
-              <Label>Quốc gia</Label>
-              <Input value={profileUser?.address?.country || ""} readOnly disabled placeholder="Chưa có" />
-            </div>
+            {renderEditableField("lastName", "Họ")}
+            {renderEditableField("firstName", "Tên")}
+            {renderEditableField("username", "Tên đăng nhập")}
+            {renderEditableField("email", "Email")}
+            {renderEditableField("phone", "Số điện thoại")}
+            {renderEditableField("gender", "Giới tính")}
+            {renderEditableField("birthDate", "Ngày sinh")}
+            {renderEditableField("password", "Mật khẩu", { type: "password" })}
+            {renderEditableField("image", "Ảnh đại diện (URL)")}
+            {renderEditableField("address", "Địa chỉ")}
+            {renderEditableField("city", "Thành phố")}
+            {renderEditableField("state", "Tỉnh/Bang")}
+            {renderEditableField("postalCode", "Mã bưu chính")}
+            {renderEditableField("country", "Quốc gia")}
           </CardContent>
 
-          <CardFooter className="justify-end border-t">
-            <Button variant="destructive" onClick={handleLogout}>
-              Đăng xuất
-            </Button>
+          <CardFooter className="justify-end gap-2 border-t">
+            {isEditing ? (
+              <>
+                <Button
+                  variant="outline"
+                  onClick={handleCancelEdit}
+                  disabled={isSavingPut}
+                >
+                  Hủy
+                </Button>
+                <Button
+                  onClick={() => void handleSavePut()}
+                  className="min-w-28 rounded-full px-5 font-semibold shadow-sm"
+                  disabled={isSavingPut}
+                >
+                  {isSavingPut ? "Đang sửa..." : "Lưu"}
+                </Button>
+              </>
+            ) : (
+              <Button variant="outline" className="rounded-full px-5" onClick={handleStartEdit}>
+                Chỉnh sửa
+              </Button>
+            )}
+            
           </CardFooter>
         </Card>
       )}
