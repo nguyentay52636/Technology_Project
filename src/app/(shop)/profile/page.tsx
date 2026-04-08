@@ -9,8 +9,11 @@ import {
   type User as ApiUser,
   type UserPutInput,
 } from "@/apis/usersApi"
+import { type Order } from "@/apis/orderApi"
+import { fetchOrders } from "../../../../mock/order"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
+import ListOrder from "@/components/home/Orders/ListOrder"
 import {
   Card,
   CardContent,
@@ -92,6 +95,9 @@ export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false)
   const [isSavingPut, setIsSavingPut] = useState(false)
   const [formValues, setFormValues] = useState<ProfileForm>(() => buildProfileForm(null, null))
+  const [activeTab, setActiveTab] = useState<"profile" | "orders">("profile")
+  const [orders, setOrders] = useState<Order[]>([])
+  const [loadingOrders, setLoadingOrders] = useState(false)
 
   useEffect(() => {
     const syncAuthUser = () => {
@@ -138,6 +144,22 @@ export default function ProfilePage() {
 
     setFormValues(buildProfileForm(profileUser, currentUser))
   }, [profileUser, currentUser, isEditing])
+
+  useEffect(() => {
+    const loadOrders = async () => {
+      if (!currentUser?.id) return
+      try {
+        setLoadingOrders(true)
+        const data = await fetchOrders(currentUser.id)
+        setOrders(data)
+      } catch (error) {
+        console.error("Failed to fetch orders:", error)
+      } finally {
+        setLoadingOrders(false)
+      }
+    }
+    loadOrders()
+  }, [currentUser?.id])
 
   const isLoggedIn = Boolean(currentUser)
 
@@ -260,11 +282,11 @@ export default function ProfilePage() {
   )
 
   return (
-    <main className="mx-auto w-full max-w-3xl px-4 py-10 md:px-6">
+    <main className="mx-auto w-full max-w-6xl px-4 py-10 md:px-6">
       <div className="mb-6 flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Hồ sơ cá nhân</h1>
-          <p className="text-sm text-muted-foreground">Xem thông tin tài khoản hiện tại.</p>
+          <h1 className="text-2xl font-bold tracking-tight">Tài khoản của tôi</h1>
+          <p className="text-sm text-muted-foreground">Quản lý thông tin cá nhân và đơn mua.</p>
         </div>
         <Button asChild variant="outline">
           <Link href="/">Về trang chủ</Link>
@@ -287,71 +309,142 @@ export default function ProfilePage() {
           </CardFooter>
         </Card>
       ) : (
-        <Card>
-          <CardHeader className="border-b">
-            <div className="flex items-center gap-3">
-              <Avatar size="lg">
-                <AvatarImage src={formValues.image || currentUser?.image} alt={displayName} />
-                <AvatarFallback>{displayInitial}</AvatarFallback>
-              </Avatar>
-              <div className="min-w-0">
-                <CardTitle className="truncate">{displayName}</CardTitle>
-                <CardDescription className="truncate">
-                  {formValues.email || currentUser?.email || "Chưa cập nhật email"}
-                </CardDescription>
-              </div>
+        <div className="grid gap-6 md:grid-cols-[250px_1fr]">
+          {/* Sidebar */}
+          <div className="space-y-2">
+            <Button
+              variant={activeTab === "profile" ? "default" : "outline"}
+              className="w-full justify-start"
+              onClick={() => setActiveTab("profile")}
+            >
+              Thông tin cá nhân
+            </Button>
+            <Button
+              variant={activeTab === "orders" ? "default" : "outline"}
+              className="w-full justify-start"
+              onClick={() => setActiveTab("orders")}
+            >
+              Đơn mua
+            </Button>
+            <div className="pt-4 border-t">
+              <Button
+                variant="destructive"
+                className="w-full"
+                onClick={handleLogout}
+              >
+                Đăng xuất
+              </Button>
             </div>
-          </CardHeader>
+          </div>
 
-          <CardContent className="grid gap-5">
-            {isLoadingProfile && (
-              <p className="text-sm text-muted-foreground">Đang tải thông tin hồ sơ...</p>
-            )}
-            {profileError && (
-              <p className="text-sm text-destructive">{profileError}</p>
-            )}
-            {renderEditableField("lastName", "Họ")}
-            {renderEditableField("firstName", "Tên")}
-            {renderEditableField("username", "Tên đăng nhập")}
-            {renderEditableField("email", "Email")}
-            {renderEditableField("phone", "Số điện thoại")}
-            {renderEditableField("gender", "Giới tính")}
-            {renderEditableField("birthDate", "Ngày sinh")}
-            {renderEditableField("password", "Mật khẩu", { type: "password" })}
-            {renderEditableField("image", "Ảnh đại diện (URL)")}
-            {renderEditableField("address", "Địa chỉ")}
-            {renderEditableField("city", "Thành phố")}
-            {renderEditableField("state", "Tỉnh/Bang")}
-            {renderEditableField("postalCode", "Mã bưu chính")}
-            {renderEditableField("country", "Quốc gia")}
-          </CardContent>
-
-          <CardFooter className="justify-end gap-2 border-t">
-            {isEditing ? (
+          {/* Content */}
+          <Card>
+            {activeTab === "profile" ? (
               <>
-                <Button
-                  variant="outline"
-                  onClick={handleCancelEdit}
-                  disabled={isSavingPut}
-                >
-                  Hủy
-                </Button>
-                <Button
-                  onClick={() => void handleSavePut()}
-                  className="min-w-28 rounded-full px-5 font-semibold shadow-sm"
-                  disabled={isSavingPut}
-                >
-                  {isSavingPut ? "Đang sửa..." : "Lưu"}
-                </Button>
+                <CardHeader className="border-b">
+                  <div className="flex items-center gap-3">
+                    <Avatar size="lg">
+                      <AvatarImage src={formValues.image || currentUser?.image} alt={displayName} />
+                      <AvatarFallback>{displayInitial}</AvatarFallback>
+                    </Avatar>
+                    <div className="min-w-0">
+                      <CardTitle className="truncate">{displayName}</CardTitle>
+                      <CardDescription className="truncate">
+                        {formValues.email || currentUser?.email || "Chưa cập nhật email"}
+                      </CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+
+                <CardContent className="grid gap-5 pt-6">
+                  {isLoadingProfile && (
+                    <p className="text-sm text-muted-foreground">Đang tải thông tin hồ sơ...</p>
+                  )}
+                  {profileError && (
+                    <p className="text-sm text-destructive">{profileError}</p>
+                  )}
+                  
+                  {/* Tên - Họ ngang */}
+                  <div className="grid gap-5 md:grid-cols-2">
+                    {renderEditableField("firstName", "Tên")}
+                    {renderEditableField("lastName", "Họ")}
+                  </div>
+
+                  {/* Username - Email ngang */}
+                  <div className="grid gap-5 md:grid-cols-2">
+                    {renderEditableField("username", "Tên đăng nhập")}
+                    {renderEditableField("email", "Email")}
+                  </div>
+
+                  {/* Số điện thoại - Giới tính ngang */}
+                  <div className="grid gap-5 md:grid-cols-2">
+                    {renderEditableField("phone", "Số điện thoại")}
+                    {renderEditableField("gender", "Giới tính")}
+                  </div>
+
+                  {/* Ngày sinh - Mật khẩu ngang */}
+                  <div className="grid gap-5 md:grid-cols-2">
+                    {renderEditableField("birthDate", "Ngày sinh")}
+                    {renderEditableField("password", "Mật khẩu", { type: "password" })}
+                  </div>
+
+                  {/* Ảnh đại diện - full */}
+                  {renderEditableField("image", "Ảnh đại diện (URL)")}
+
+                  {/* Địa chỉ - full */}
+                  {renderEditableField("address", "Địa chỉ")}
+
+                  {/* Thành phố - Tỉnh/Bang ngang */}
+                  <div className="grid gap-5 md:grid-cols-2">
+                    {renderEditableField("city", "Thành phố")}
+                    {renderEditableField("state", "Tỉnh/Bang")}
+                  </div>
+
+                  {/* Mã bưu chính - Quốc gia ngang */}
+                  <div className="grid gap-5 md:grid-cols-2">
+                    {renderEditableField("postalCode", "Mã bưu chính")}
+                    {renderEditableField("country", "Quốc gia")}
+                  </div>
+                </CardContent>
+
+                <CardFooter className="justify-end gap-2 border-t">
+                  {isEditing ? (
+                    <>
+                      <Button
+                        variant="outline"
+                        onClick={handleCancelEdit}
+                        disabled={isSavingPut}
+                      >
+                        Hủy
+                      </Button>
+                      <Button
+                        onClick={() => void handleSavePut()}
+                        className="min-w-28 rounded-full px-5 font-semibold shadow-sm"
+                        disabled={isSavingPut}
+                      >
+                        {isSavingPut ? "Đang sửa..." : "Lưu"}
+                      </Button>
+                    </>
+                  ) : (
+                    <Button variant="outline" className="rounded-full px-5" onClick={handleStartEdit}>
+                      Chỉnh sửa
+                    </Button>
+                  )}
+                </CardFooter>
               </>
             ) : (
-              <Button variant="outline" className="rounded-full px-5" onClick={handleStartEdit}>
-                Chỉnh sửa
-              </Button>
+              <>
+                <CardHeader className="border-b">
+                  <CardTitle>Đơn mua của tôi</CardTitle>
+                  <CardDescription>Xem lịch sử và chi tiết các đơn hàng</CardDescription>
+                </CardHeader>
+                <CardContent className="pt-6">
+                  <ListOrder loading={loadingOrders} orders={orders} activeTab="all" />
+                </CardContent>
+              </>
             )}
-            
-          </CardFooter>
-        </Card>
+          </Card>
+        </div>
       )}
     </main>
   )

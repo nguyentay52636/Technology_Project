@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { MapPin, Phone, Mail, Package, Calendar, CreditCard } from "lucide-react"
 import {
     Dialog,
@@ -11,6 +12,7 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { type Order, type OrderStatus } from "@/apis/orderApi"
+import { usersApi, type User } from "@/apis/usersApi"
 import { OrderStatusBadge, PaymentStatusBadge } from "../OrderStatusBadge"
 import { formatPrice, formatDateTime, formatPaymentMethod } from "@/utils/format"
 
@@ -27,6 +29,26 @@ export function OrderDetailDialog({
     onOpenChange,
     onUpdateStatus,
 }: OrderDetailDialogProps) {
+    const [user, setUser] = useState<User | null>(null)
+    const [loadingUser, setLoadingUser] = useState(false)
+
+    useEffect(() => {
+        const loadUser = async () => {
+            if (!order || !order.userId) return
+            try {
+                setLoadingUser(true)
+                const userData = await usersApi.getUserById(order.userId)
+                setUser(userData)
+            } catch (error) {
+                console.error("Failed to load user data:", error)
+                setUser(null)
+            } finally {
+                setLoadingUser(false)
+            }
+        }
+        loadUser()
+    }, [order?.userId, open])
+
     if (!order) return null
 
     const getNextStatus = (): OrderStatus | null => {
@@ -75,15 +97,15 @@ export function OrderDetailDialog({
                             <div className="grid gap-3 sm:grid-cols-2">
                                 <div className="flex items-center gap-2 text-sm">
                                     <Package className="h-4 w-4 text-muted-foreground" />
-                                    <span className="font-medium">{order.customerName}</span>
+                                    <span className="font-medium">{user ? `${user.firstName} ${user.lastName}` : "Đang tải..."}</span>
                                 </div>
                                 <div className="flex items-center gap-2 text-sm">
                                     <Phone className="h-4 w-4 text-muted-foreground" />
-                                    <span>{order.customerPhone}</span>
+                                    <span>{user?.phone || "Chưa cập nhật"}</span>
                                 </div>
                                 <div className="flex items-center gap-2 text-sm sm:col-span-2">
                                     <Mail className="h-4 w-4 text-muted-foreground" />
-                                    <span>{order.customerEmail}</span>
+                                    <span>{user?.email || "Chưa cập nhật"}</span>
                                 </div>
                                 <div className="flex items-start gap-2 text-sm sm:col-span-2">
                                     <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
