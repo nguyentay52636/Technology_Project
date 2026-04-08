@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { authApi } from "@/apis/authApi"
 import { usersApi } from "@/apis/usersApi"
+import { useCartAPI } from "@/hooks/useCartAPI"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -27,6 +28,7 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const router = useRouter()
+  const { initializeCart } = useCartAPI()
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
@@ -85,6 +87,9 @@ export function LoginForm({
       localStorage.setItem("accessToken", loginResponse.accessToken)
       localStorage.setItem("refreshToken", loginResponse.refreshToken)
       window.dispatchEvent(new Event("auth-changed"))
+
+      // 🔄 Load existing cart for user
+      await initializeCart()
 
       if (normalizedRole === "admin" || normalizedRole === "moderator") {
         router.push("/admin")

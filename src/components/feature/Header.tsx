@@ -19,6 +19,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useCart } from "@/lib/cart-context"
+import { useCartAPI } from "@/hooks/useCartAPI"
 import { Badge } from "../ui/badge"
 import { NavUser } from "../user/nav-user"
 
@@ -61,6 +62,7 @@ export function Header() {
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [currentUser, setCurrentUser] = useState<StoredUser | null>(null)
   const { itemCount, setIsCartOpen } = useCart()
+  const { deleteCartOnLogout } = useCartAPI()
 
   const userRole = currentUser?.role?.toLowerCase() ?? null
   const isAdminOrModerator = userRole === "admin" || userRole === "moderator"
@@ -83,6 +85,9 @@ export function Header() {
   }, [])
 
   const handleLogout = () => {
+    // 🚪 Clear cart from Context
+    deleteCartOnLogout()
+    
     localStorage.removeItem("currentUser")
     localStorage.removeItem("accessToken")
     localStorage.removeItem("refreshToken")

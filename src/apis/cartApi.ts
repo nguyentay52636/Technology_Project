@@ -28,8 +28,8 @@ interface UserCartsResponse {
 
 const BASE_URL = "https://dummyjson.com/carts"
 
-async function fetchJson<T>(url: string): Promise<T> {
-  const response = await fetch(url)
+async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
+  const response = await fetch(url, options)
 
   if (!response.ok) {
     throw new Error(`HTTP Error: ${response.status}`)
@@ -42,6 +42,35 @@ export const cartApi = {
   getCartsByUserId: async (userId: string | number): Promise<Cart[]> => {
     const data = await fetchJson<UserCartsResponse>(`${BASE_URL}/user/${userId}`)
     return data.carts
+  },
+
+  // Get single cart by ID
+  getCartById: async (cartId: string | number): Promise<Cart> => {
+    return fetchJson<Cart>(`${BASE_URL}/${cartId}`)
+  },
+
+  // 📝 POST cart - create new cart
+  // This will create a new cart with initial products
+  createCart: async (userId: string | number, products: CartProduct[]): Promise<Cart> => {
+    return fetchJson<Cart>(`${BASE_URL}/add`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId, products }),
+    })
+  },
+
+  // 📝 PATCH cart - update products
+  // This will add new product or update existing quantity
+  patchCart: async (cartId: string | number, products: CartProduct[]): Promise<Cart> => {
+    return fetchJson<Cart>(`${BASE_URL}/${cartId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ products }),
+    })
   },
 
   // Some users may have multiple carts. This method flattens products

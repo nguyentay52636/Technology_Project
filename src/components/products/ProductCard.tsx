@@ -4,8 +4,10 @@ import { useRouter } from 'next/navigation';
 import type { Product } from '@/apis/productApi';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/lib/cart-context';
+import { useCartAPI } from '@/hooks/useCartAPI';
 import { formatUsdToVnd } from '@/utils/format';
 import { toast } from 'sonner';
+import { useState } from 'react';
 
 // Định nghĩa kiểu dữ liệu cho Props
 interface ProductCardProps {
@@ -14,7 +16,9 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const router = useRouter();
-  const { items, addItem } = useCart();
+  const { items } = useCart();
+  const { addToCartAPI, loading } = useCartAPI();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleGoToDetail = () => {
     router.push(`/products/${product.id}`);
@@ -73,30 +77,28 @@ export default function ProductCard({ product }: ProductCardProps) {
       </div>
       
       <Button
-        onClick={(event) => {
+        onClick={async (event) => {
           event.stopPropagation();
+          setIsLoading(true);
           const existingItem = items.find((item) => item.id === String(product.id));
           const nextQuantity = (existingItem?.quantity ?? 0) + 1;
-          
 
-          addItem({
-            id: String(product.id),
-            name: product.title,
-            price: product.price,
-            image: product.thumbnail,
-            category: product.category,
-            originalPrice:
-              product.discountPercentage > 0
-                ? product.price / (1 - product.discountPercentage / 100)
-                : undefined,
-          });
-          toast.success(
-            `Đã thêm "${product.title}" vào giỏ hàng (x${nextQuantity})`
-          );
+          try {
+            await addToCartAPI({
+              id: product.id,
+              name: product.title,
+              price: product.price,
+              image: product.thumbnail,
+              category: product.category,
+            });
+          } finally {
+            setIsLoading(false);
+          }
         }}
-        className="mt-4 bg-red-50 text-red-500 border border-red-200 px-4 py-2 rounded-lg hover:bg-red-500 hover:text-white transition font-medium flex items-center justify-center gap-2"
+        disabled={isLoading || loading}
+        className="mt-4 bg-red-50 text-red-500 border border-red-200 px-4 py-2 rounded-lg hover:bg-red-500 hover:text-white transition font-medium flex items-center justify-center gap-2 disabled:opacity-50"
       >
-        <span>🛒</span> Thêm vào giỏ hàng
+        <span>🛒</span> {isLoading || loading ? "Đang thêm..." : "Thêm vào giỏ hàng"}
       </Button>
     </div>
   );

@@ -12,7 +12,9 @@ import {
     SheetTitle,
 } from "@/components/ui/sheet"
 import { useCart } from "@/lib/cart-context"
+import { useCartAPI } from "@/hooks/useCartAPI"
 import { formatUsdToVnd } from "@/utils/format"
+import { useState } from "react"
 
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
@@ -20,6 +22,8 @@ import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/
 export function CartSheet() {
     const router = useRouter()
     const { items, removeItem, updateQuantity, total, itemCount, isCartOpen, setIsCartOpen, clearCart } = useCart()
+    const { updateQuantityAPI, deleteCartAPI, deleteCartOnLogout, loading } = useCartAPI()
+    const [isLoading, setIsLoading] = useState(false)
 
     return (
         <Sheet open={isCartOpen} onOpenChange={setIsCartOpen}>
@@ -71,7 +75,15 @@ export function CartSheet() {
                                                     variant="ghost"
                                                     size="icon"
                                                     className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                                                    onClick={() => removeItem(item.id)}
+                                                    onClick={async () => {
+                                                        setIsLoading(true);
+                                                        try {
+                                                            await updateQuantityAPI(item.id, 0);
+                                                        } finally {
+                                                            setIsLoading(false);
+                                                        }
+                                                    }}
+                                                    disabled={isLoading || loading}
                                                 >
                                                     <X className="h-4 w-4" />
                                                 </Button>
@@ -82,7 +94,15 @@ export function CartSheet() {
                                                         variant="outline"
                                                         size="icon"
                                                         className="h-7 w-7"
-                                                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                                                        onClick={async () => {
+                                                            setIsLoading(true);
+                                                            try {
+                                                                await updateQuantityAPI(item.id, item.quantity - 1);
+                                                            } finally {
+                                                                setIsLoading(false);
+                                                            }
+                                                        }}
+                                                        disabled={isLoading || loading}
                                                     >
                                                         <Minus className="h-3 w-3" />
                                                     </Button>
@@ -93,7 +113,15 @@ export function CartSheet() {
                                                         variant="outline"
                                                         size="icon"
                                                         className="h-7 w-7"
-                                                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                                        onClick={async () => {
+                                                            setIsLoading(true);
+                                                            try {
+                                                                await updateQuantityAPI(item.id, item.quantity + 1);
+                                                            } finally {
+                                                                setIsLoading(false);
+                                                            }
+                                                        }}
+                                                        disabled={isLoading || loading}
                                                     >
                                                         <Plus className="h-3 w-3" />
                                                     </Button>
@@ -133,14 +161,30 @@ export function CartSheet() {
                                 <Button
                                     size="lg"
                                     className="w-full"
-                                    onClick={() => {
+                                    onClick={async () => {
                                         setIsCartOpen(false)
+                                        // Delete cart before checkout
+                                        deleteCartOnLogout()
                                         router.push("/checkout")
                                     }}
+                                    disabled={isLoading || loading}
                                 >
                                     Thanh toán ({formatUsdToVnd(total)})
                                 </Button>
-                                <Button variant="outline" size="lg" className="w-full gap-2 text-muted-foreground hover:text-destructive" onClick={clearCart}>
+                                <Button 
+                                    variant="outline" 
+                                    size="lg" 
+                                    className="w-full gap-2 text-muted-foreground hover:text-destructive" 
+                                    onClick={async () => {
+                                        setIsLoading(true);
+                                        try {
+                                            await deleteCartAPI();
+                                        } finally {
+                                            setIsLoading(false);
+                                        }
+                                    }}
+                                    disabled={isLoading || loading}
+                                >
                                     <Trash2 className="h-4 w-4" />
                                     Xóa sạch giỏ hàng
                                 </Button>
