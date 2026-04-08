@@ -73,6 +73,16 @@ export const cartApi = {
     })
   },
 
+  // 🗑️ DELETE cart - remove cart completely
+  deleteCart: async (cartId: string | number): Promise<{ id: number }> => {
+    return fetchJson<{ id: number }>(`${BASE_URL}/${cartId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+  },
+
   // Some users may have multiple carts. This method flattens products
   // and keeps one entry per product id with summed quantity.
   getMergedProductsByUserId: async (userId: string | number): Promise<CartProduct[]> => {

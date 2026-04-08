@@ -229,7 +229,7 @@ export function useCartAPI() {
   )
 
   /**
-   * 🗑️ XÓA HẾT GIỎ (empty all products)
+   * 🗑️ XÓA HẾT GIỎ (DELETE)
    */
   const deleteCartAPI = useCallback(async () => {
     try {
@@ -243,9 +243,10 @@ export function useCartAPI() {
         return
       }
 
-      // ✏️ PATCH với products rỗng
-      await cartApi.patchCart(cartId, [])
+      // 🗑️ DELETE cart
+      await cartApi.deleteCart(cartId)
 
+      setCartId(null)
       clearCart()
       toast.success("✅ Giỏ hàng đã xóa")
     } catch (error) {
