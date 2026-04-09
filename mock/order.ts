@@ -1,3 +1,4 @@
+import { usersApi } from "@/apis/usersApi"
 import { type Order, type OrderStatus, type PaymentStatus } from "@/apis/orderApi"
 
 const mockOrders: Order[] = [
@@ -277,12 +278,40 @@ const mockOrders: Order[] = [
   },
 ]
 
+let cachedOrders: Order[] | null = null
+
+async function enrichOrders(orders: Order[]): Promise<Order[]> {
+  const users = await usersApi.getUsers()
+  const usersById = new Map(users.map((user) => [user.id, user]))
+
+  return orders.map((order) => {
+    const user = usersById.get(order.userId)
+
+    if (!user) {
+      return order
+    }
+
+    const customerName = `${user.firstName} ${user.lastName}`.trim()
+
+    return {
+      ...order,
+      customerName: order.customerName || customerName,
+      customerEmail: order.customerEmail || user.email,
+      customerPhone: order.customerPhone || user.phone,
+    }
+  })
+}
+
 export async function fetchOrders(userId?: number): Promise<Order[]> {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 500))
+  if (!cachedOrders) {
+    // Simulate API delay
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    cachedOrders = await enrichOrders(mockOrders)
+  }
+
   // Return all orders if no userId provided (for admin page)
   // Return filtered orders if userId provided (for user's personal orders page)
-  return userId ? mockOrders.filter((order) => order.userId === userId) : mockOrders
+  return userId ? cachedOrders.filter((order) => order.userId === userId) : cachedOrders
 }
 
 export async function fetchOrderById(id: number): Promise<Order | undefined> {
