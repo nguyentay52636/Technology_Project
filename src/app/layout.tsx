@@ -5,7 +5,7 @@ import "./globals.css";
 // 1. Import các component của bạn vào đây
 import { cn } from "@/lib/utils";
 import MainLayout from "@/components/MainLayout";
-import { TooltipProvider } from "@/components/ui/tooltip";
+// ...existing code...
 import { ThemeProvider } from "@/components/theme-provider";
 import { CartProvider } from "@/lib/cart-context";
 import { Toaster } from "sonner";
@@ -45,11 +45,9 @@ export default function RootLayout({
         >
           <Toaster position="top-right" richColors />
           <CartProvider>
-            <TooltipProvider>
-              <MainLayout>
-                {children}
-              </MainLayout>
-            </TooltipProvider>
+            <MainLayout>
+              {children}
+            </MainLayout>
           </CartProvider>
         </ThemeProvider>
 

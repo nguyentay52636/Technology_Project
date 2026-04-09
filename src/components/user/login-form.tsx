@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { authApi } from "@/apis/authApi"
 import { usersApi } from "@/apis/usersApi"
-import { useCartAPI } from "@/hooks/useCartAPI"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -27,8 +26,17 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const setAuthCookies = (normalizedRole?: string) => {
+    document.cookie = `auth_logged_in=1; Path=/; Max-Age=${60 * 60 * 24 * 30}; SameSite=Lax`
+
+    if (normalizedRole) {
+      document.cookie = `auth_role=${encodeURIComponent(normalizedRole)}; Path=/; Max-Age=${60 * 60 * 24 * 30}; SameSite=Lax`
+    } else {
+      document.cookie = "auth_role=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax"
+    }
+  }
+
   const router = useRouter()
-  const { initializeCart } = useCartAPI()
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
@@ -86,10 +94,8 @@ export function LoginForm({
 
       localStorage.setItem("accessToken", loginResponse.accessToken)
       localStorage.setItem("refreshToken", loginResponse.refreshToken)
+      setAuthCookies(normalizedRole)
       window.dispatchEvent(new Event("auth-changed"))
-
-      // 🔄 Load existing cart for user
-      await initializeCart()
 
       if (normalizedRole === "admin" || normalizedRole === "moderator") {
         router.push("/admin")
