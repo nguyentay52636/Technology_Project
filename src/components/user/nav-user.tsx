@@ -75,7 +75,7 @@ export function NavUser({
             </Link>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {!isAdminOrModerator && <DropdownMenuItem><Link href="/orders">Đơn hàng</Link></DropdownMenuItem>}
+        
           {isAdminOrModerator && (
             <DropdownMenuItem asChild>
               <Link href="/admin">Quản trị</Link>
@@ -131,25 +131,9 @@ export function NavUser({
                 </div>
               </Link>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <SparklesIcon />
-                Nâng cấp lên Pro
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <CreditCardIcon />
-                Thanh toán
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <BellIcon />
-                Thông báo
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
+  
+            
+            
             <DropdownMenuItem onClick={onLogout}>
               <LogOutIcon />
               Đăng xuất
